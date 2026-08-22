@@ -1,0 +1,723 @@
+<title>Atelier Jeux de Plateau</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zilla+Slab:wght@400;500;600;700&family=Karla:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap">
+<style>
+  :root{
+    --bg:#E8E4D9;
+    --surface:#F4F1E8;
+    --surface-alt:#FFFFFF;
+    --ink:#24211B;
+    --ink-soft:#5F5847;
+    --ink-faint:#8B8371;
+    --line:#D6CFBC;
+    --accent:#BE7A1F;
+    --accent-strong:#8F5A14;
+    --accent-2:#A23A33;
+    --accent-2-strong:#7C2B26;
+    --dot: rgba(36,33,27,0.07);
+    --shadow: rgba(36,33,27,0.10);
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#1C1B17;
+      --surface:#242219;
+      --surface-alt:#2C2A20;
+      --ink:#ECE6D6;
+      --ink-soft:#B7AF9A;
+      --ink-faint:#857D69;
+      --line:#3C392E;
+      --accent:#E2A44C;
+      --accent-strong:#F0C583;
+      --accent-2:#DD7A72;
+      --accent-2-strong:#EDA098;
+      --dot: rgba(236,230,214,0.055);
+      --shadow: rgba(0,0,0,0.35);
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#1C1B17;
+    --surface:#242219;
+    --surface-alt:#2C2A20;
+    --ink:#ECE6D6;
+    --ink-soft:#B7AF9A;
+    --ink-faint:#857D69;
+    --line:#3C392E;
+    --accent:#E2A44C;
+    --accent-strong:#F0C583;
+    --accent-2:#DD7A72;
+    --accent-2-strong:#EDA098;
+    --dot: rgba(236,230,214,0.055);
+    --shadow: rgba(0,0,0,0.35);
+  }
+
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  @media (prefers-reduced-motion: reduce){ html{scroll-behavior:auto;} }
+
+  body{
+    margin:0;
+    background:var(--bg);
+    background-image: radial-gradient(var(--dot) 1px, transparent 1px);
+    background-size: 22px 22px;
+    color:var(--ink);
+    font-family:'Karla', system-ui, sans-serif;
+    line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  h1,h2,h3{
+    font-family:'Zilla Slab', Georgia, serif;
+    text-wrap:balance;
+    margin:0;
+    color:var(--ink);
+  }
+
+  .mono{
+    font-family:'IBM Plex Mono', ui-monospace, monospace;
+  }
+
+  a{ color:var(--accent-strong); }
+  a:focus-visible, button:focus-visible, .toc a:focus-visible{
+    outline:2px solid var(--accent);
+    outline-offset:3px;
+  }
+
+  .page{ max-width:1180px; margin:0 auto; padding:0 24px 96px; }
+
+  /* ---------- HERO ---------- */
+  .hero{
+    padding:56px 0 36px;
+    border-bottom:1px solid var(--line);
+    margin-bottom:8px;
+  }
+  .eyebrow{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:0.72rem;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    color:var(--accent-strong);
+    margin:0 0 14px;
+  }
+  .hero h1{
+    font-size:clamp(2.1rem, 4.2vw, 3.1rem);
+    font-weight:700;
+    letter-spacing:-0.01em;
+  }
+  .hero p.lede{
+    max-width:62ch;
+    margin:14px 0 0;
+    color:var(--ink-soft);
+    font-size:1.05rem;
+  }
+
+  .stat-strip{
+    display:flex;
+    flex-wrap:wrap;
+    gap:0;
+    margin-top:32px;
+    border:1px solid var(--line);
+    background:var(--surface);
+    border-radius:4px;
+    overflow:hidden;
+  }
+  .stat{
+    flex:1 1 160px;
+    padding:16px 20px;
+    border-right:1px solid var(--line);
+  }
+  .stat:last-child{ border-right:none; }
+  .stat .label{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:0.68rem;
+    letter-spacing:0.1em;
+    text-transform:uppercase;
+    color:var(--ink-faint);
+    display:block;
+    margin-bottom:6px;
+  }
+  .stat .value{
+    font-family:'Zilla Slab', serif;
+    font-weight:600;
+    font-size:1.15rem;
+  }
+
+  /* ---------- LAYOUT ---------- */
+  .layout{
+    display:grid;
+    grid-template-columns: 232px 1fr;
+    gap:48px;
+    align-items:start;
+    padding-top:36px;
+  }
+  @media (max-width: 880px){
+    .layout{ grid-template-columns: 1fr; }
+  }
+
+  .toc{
+    position:sticky;
+    top:24px;
+    display:flex;
+    flex-direction:column;
+    gap:2px;
+  }
+  @media (max-width: 880px){
+    .toc{
+      position:static;
+      flex-direction:row;
+      flex-wrap:wrap;
+      gap:8px;
+      padding-bottom:28px;
+      border-bottom:1px solid var(--line);
+      margin-bottom:8px;
+    }
+  }
+  .toc .toc-title{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:0.68rem;
+    letter-spacing:0.1em;
+    text-transform:uppercase;
+    color:var(--ink-faint);
+    margin-bottom:10px;
+  }
+  @media (max-width: 880px){ .toc .toc-title{ display:none; } }
+  .toc a{
+    text-decoration:none;
+    color:var(--ink-soft);
+    font-size:0.92rem;
+    padding:6px 10px;
+    border-radius:3px;
+    border-left:2px solid transparent;
+  }
+  @media (max-width: 880px){
+    .toc a{
+      border:1px solid var(--line);
+      border-radius:14px;
+      font-family:'IBM Plex Mono', monospace;
+      font-size:0.76rem;
+    }
+  }
+  .toc a:hover{ color:var(--ink); background:var(--surface); }
+  .toc a.active{
+    color:var(--accent-strong);
+    border-left-color:var(--accent);
+    background:var(--surface);
+    font-weight:600;
+  }
+  @media (max-width: 880px){
+    .toc a.active{ border-color:var(--accent); background:var(--surface); }
+  }
+
+  main{ min-width:0; }
+  section{ margin-bottom:64px; scroll-margin-top:24px; }
+  section > h2{
+    font-size:1.6rem;
+    font-weight:600;
+    margin-bottom:6px;
+  }
+  section > .section-sub{
+    color:var(--ink-faint);
+    font-size:0.92rem;
+    margin:0 0 26px;
+  }
+
+  /* ---------- DAY BLOCK ---------- */
+  .day{
+    border:1px solid var(--line);
+    background:var(--surface);
+    border-radius:6px;
+    overflow:hidden;
+  }
+  .day + .day{ margin-top:22px; }
+  .day-head{
+    display:flex;
+    align-items:center;
+    gap:16px;
+    padding:20px 24px;
+    border-bottom:1px solid var(--line);
+    background:var(--surface-alt);
+  }
+  .day-badge{
+    font-family:'Zilla Slab', serif;
+    font-weight:700;
+    font-size:1.3rem;
+    width:46px;
+    height:46px;
+    flex:none;
+    border-radius:50%;
+    border:2px solid var(--accent);
+    color:var(--accent-strong);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+  .day-head h3{ font-size:1.2rem; font-weight:600; }
+  .day-head .day-tag{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:0.72rem;
+    color:var(--ink-faint);
+    letter-spacing:0.04em;
+  }
+  .day-body{ padding:24px; }
+
+  .halves{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:22px;
+  }
+  @media (max-width: 640px){ .halves{ grid-template-columns:1fr; } }
+
+  .half .half-label{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:0.7rem;
+    letter-spacing:0.1em;
+    text-transform:uppercase;
+    color:var(--ink-faint);
+    padding-bottom:8px;
+    margin-bottom:12px;
+    border-bottom:2px solid var(--line);
+  }
+  .half ul{ margin:0; padding-left:1.15em; }
+  .half li{ margin-bottom:6px; }
+  .half p{ margin:0 0 10px; }
+
+  .callout{
+    border-left:3px solid var(--accent);
+    background:var(--surface-alt);
+    border-radius:0 4px 4px 0;
+    padding:14px 16px;
+    margin:14px 0;
+  }
+  .callout .callout-tag{
+    display:inline-block;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:0.66rem;
+    letter-spacing:0.1em;
+    text-transform:uppercase;
+    color:var(--accent-strong);
+    margin-bottom:8px;
+  }
+  .callout.alt{ border-left-color:var(--accent-2); }
+  .callout.alt .callout-tag{ color:var(--accent-2-strong); }
+  .callout ul{ margin:0; padding-left:1.1em; }
+  .callout li{ margin-bottom:4px; }
+  .callout p:last-child{ margin-bottom:0; }
+
+  .full{ padding:24px; }
+
+  /* ---------- TABLES ---------- */
+  .table-wrap{ overflow-x:auto; border:1px solid var(--line); border-radius:6px; }
+  table{ border-collapse:collapse; width:100%; min-width:520px; font-size:0.94rem; }
+  thead th{
+    text-align:left;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:0.7rem;
+    letter-spacing:0.08em;
+    text-transform:uppercase;
+    color:var(--ink-faint);
+    background:var(--surface-alt);
+    padding:10px 14px;
+    border-bottom:1px solid var(--line);
+    white-space:nowrap;
+  }
+  tbody td{
+    padding:10px 14px;
+    border-bottom:1px solid var(--line);
+    vertical-align:top;
+  }
+  tbody tr:last-child td{ border-bottom:none; }
+  tbody tr:nth-child(even){ background:var(--surface); }
+  td.num, th.num{ font-family:'IBM Plex Mono', monospace; font-variant-numeric:tabular-nums; }
+
+  .tag{
+    display:inline-block;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:0.68rem;
+    letter-spacing:0.04em;
+    padding:2px 8px;
+    border-radius:10px;
+    border:1px solid var(--line);
+    color:var(--ink-soft);
+    white-space:nowrap;
+  }
+  .tag.era-classique{ border-color:var(--accent-2); color:var(--accent-2-strong); }
+  .tag.era-contemporain{ border-color:var(--accent); color:var(--accent-strong); }
+
+  /* ---------- COMPLEMENTS GRID ---------- */
+  .comp-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:20px;
+  }
+  @media (max-width: 720px){ .comp-grid{ grid-template-columns:1fr; } }
+  .card{
+    border:1px solid var(--line);
+    background:var(--surface);
+    border-radius:6px;
+    padding:20px 22px;
+  }
+  .card h3{ font-size:1.02rem; font-weight:600; margin-bottom:10px; }
+  .card ul{ margin:0; padding-left:1.15em; }
+  .card li{ margin-bottom:6px; }
+  .card.span2{ grid-column:1 / -1; }
+
+  footer{
+    margin-top:24px;
+    padding-top:24px;
+    border-top:1px solid var(--line);
+    color:var(--ink-faint);
+    font-size:0.82rem;
+  }
+</style>
+
+<div class="page">
+
+  <header class="hero">
+    <p class="eyebrow">EArtSup Bordeaux · Atelier de conception</p>
+    <h1>Jeux de Plateau — Semaine d'atelier</h1>
+    <p class="lede">Cinq jours pour sensibiliser les élèves aux contraintes du jeu de plateau comme support : ils conçoivent, fabriquent et testent un jeu original à partir d'un thème issu de la culture pop.</p>
+    <div class="stat-strip">
+      <div class="stat"><span class="label">Durée</span><span class="value">5 jours</span></div>
+      <div class="stat"><span class="label">Équipes</span><span class="value">6 groupes de 6</span></div>
+      <div class="stat"><span class="label">Thème</span><span class="value">Imposé · culture pop</span></div>
+      <div class="stat"><span class="label">Encadrement</span><span class="value">Suivi continu + mini-cours</span></div>
+      <div class="stat"><span class="label">Restitution</span><span class="value">Jury, jour 5</span></div>
+    </div>
+  </header>
+
+  <div class="layout">
+    <nav class="toc" id="toc">
+      <span class="toc-title">Sommaire</span>
+      <a href="#jour1">Jour 1 — Fondations</a>
+      <a href="#jour2">Jour 2 — Univers</a>
+      <a href="#jour3">Jour 3 — Règles</a>
+      <a href="#jour4">Jour 4 — Fabrication</a>
+      <a href="#jour5">Jour 5 — Restitution</a>
+      <a href="#themes">Thèmes proposés</a>
+      <a href="#complements">Compléments</a>
+    </nav>
+
+    <main>
+
+      <section id="jour1">
+        <h2>Jour 1 — Fondations &amp; lancement</h2>
+        <p class="section-sub">Théorie le matin, mise au travail dès l'après-midi : les équipes repartent avec une fiche de pitch avant la fin de la journée.</p>
+        <div class="day">
+          <div class="day-head">
+            <span class="day-badge">J1</span>
+            <div>
+              <h3>Fondations &amp; lancement</h3>
+              <span class="day-tag mono">THÉORIE + LANCEMENT DE PROJET</span>
+            </div>
+          </div>
+          <div class="day-body">
+            <div class="halves">
+              <div class="half">
+                <div class="half-label">Théorie</div>
+                <div class="callout">
+                  <span class="callout-tag">Mini-cours</span>
+                  <ul>
+                    <li><strong>Game Design</strong> — boucle de gameplay, courbe de progression, équilibrage</li>
+                    <li><strong>UX</strong> — lisibilité de l'information, feedback joueur, accessibilité (couleur, taille, contraste)</li>
+                    <li><strong>Contraintes du jeu de plateau</strong> — format boîte, coût matière, portabilité, nombre de composants gérable en 5 jours</li>
+                  </ul>
+                </div>
+              </div>
+              <div class="half">
+                <div class="half-label">Projet — dès l'après-midi</div>
+                <p>Formation des 6 groupes, distribution de la liste des 20 thèmes, puis travail sur les fondamentaux du jeu :</p>
+                <ul>
+                  <li><strong>Pitch elevator</strong> — le concept en une ou deux phrases</li>
+                  <li><strong>Type de jeu + public visé</strong> — coopératif / compétitif, nombre de joueurs, dominante (fun, réflexion, gestion), durée de partie, tranche d'âge</li>
+                  <li><strong>Matériel indispensable</strong> — première liste : plateau, cartes, dés, figurines…</li>
+                </ul>
+              </div>
+            </div>
+            <div class="callout alt">
+              <span class="callout-tag">Complément — attribution des thèmes</span>
+              <p>Pour éviter que les 6 équipes se ruent sur les mêmes 2-3 références : faire classer à chaque équipe ses 3 thèmes préférés sur la liste des 20, puis arbitrer les attributions en évitant les doublons. Garder un ou deux thèmes « joker » non classés en réserve pour départager.</p>
+            </div>
+            <div class="callout alt">
+              <span class="callout-tag">Livrable de fin de journée</span>
+              <p>Une fiche de pitch A4 par équipe (concept, type de jeu, public visé, matériel indispensable) — sert de référence à laquelle vous et l'équipe pourrez vous reporter tout au long de la semaine si le projet dérive.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="jour2">
+        <h2>Jour 2 — Univers &amp; personnages</h2>
+        <p class="section-sub">Direction artistique le matin, premiers objets physiques l'après-midi.</p>
+        <div class="day">
+          <div class="day-head">
+            <span class="day-badge">J2</span>
+            <div>
+              <h3>Univers &amp; personnages</h3>
+              <span class="day-tag mono">MINI-COURS + FABRICATION</span>
+            </div>
+          </div>
+          <div class="day-body">
+            <div class="halves">
+              <div class="half">
+                <div class="half-label">Matin — mini-cours</div>
+                <div class="callout">
+                  <span class="callout-tag">Univers graphique</span>
+                  <p>Direction artistique cohérente avec le thème choisi : moodboard, palette, ambiance.</p>
+                </div>
+                <div class="callout">
+                  <span class="callout-tag">Chara design</span>
+                  <p>Lisibilité à petite échelle (pion, carte), silhouette reconnaissable, cohérence avec l'univers, faisabilité — moins de détails, c'est plus facile à reproduire en plusieurs exemplaires.</p>
+                </div>
+                <div class="callout">
+                  <span class="callout-tag">Contraintes de matériel</span>
+                  <p>Coût, formats standards (cartes 63×88 mm, plateau A3/A2, pions bois ou carton), impression couleur ou N&amp;B, découpe, accessibilité de fabrication en 2 jours.</p>
+                </div>
+              </div>
+              <div class="half">
+                <div class="half-label">Après-midi — fabrication</div>
+                <ul>
+                  <li>Prototypage « quick &amp; dirty » : papier, feutres, post-it avant toute version propre — on teste l'idée, pas encore le rendu</li>
+                  <li>Premiers éléments physiques (pions, cartes brutes, ébauche de plateau)</li>
+                  <li>Prise en compte du cycle de vie de l'objet : mise en place, déroulement, rangement, transport (poids, fragilité, taille de boîte)</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="jour3">
+        <h2>Jour 3 — Règles &amp; premiers tests</h2>
+        <p class="section-sub">Écrire des règles n'est pas les expliquer à l'oral : deux exercices bien distincts, testés le même jour.</p>
+        <div class="day">
+          <div class="day-head">
+            <span class="day-badge">J3</span>
+            <div>
+              <h3>Règles &amp; premiers tests</h3>
+              <span class="day-tag mono">MINI-COURS + RÉDACTION + PLAYTEST</span>
+            </div>
+          </div>
+          <div class="day-body">
+            <div class="halves">
+              <div class="half">
+                <div class="half-label">Matin — mini-cours</div>
+                <div class="callout">
+                  <span class="callout-tag">Écriture des règles</span>
+                  <ul>
+                    <li>Pédagogie et structure logique : but du jeu → mise en place → tour de jeu → cas particuliers → fin de partie</li>
+                    <li>Hiérarchie de l'information : titres, exemples, iconographie</li>
+                    <li>Lisibilité : phrases courtes, vocabulaire constant d'un bout à l'autre</li>
+                  </ul>
+                </div>
+                <div class="callout">
+                  <span class="callout-tag">Écrit vs oral</span>
+                  <p>Le livret écrit doit être exhaustif et consultable — c'est une référence. L'explication orale doit être progressive et rassurante — c'est un onboarding. Les deux sont complémentaires, ni l'un ni l'autre ne remplace le second.</p>
+                </div>
+                <div class="callout">
+                  <span class="callout-tag">Importance du thème</span>
+                  <p>Le thème doit infuser le vocabulaire des règles, pas seulement l'habillage graphique : ça renforce l'immersion et aide à mémoriser les mécaniques.</p>
+                </div>
+              </div>
+              <div class="half">
+                <div class="half-label">Après-midi — travail</div>
+                <ul>
+                  <li>Rédaction du livret de règles v1</li>
+                  <li>Premier playtest interne : le jeu doit être jouable même incomplet (proxy pour les éléments manquants)</li>
+                  <li>Playtest croisé — une équipe teste le jeu d'une équipe voisine, sans explication du concepteur autre que le livret écrit</li>
+                </ul>
+                <div class="callout alt">
+                  <span class="callout-tag">Complément</span>
+                  <p>Le playtest croisé fonctionne comme un vrai test utilisateur : si l'équipe qui teste doit deviner une règle ou revenir en arrière, c'est que le livret n'est pas encore assez clair — c'est précisément ce qu'on veut détecter avant le jour 4.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="jour4">
+        <h2>Jour 4 — Fabrication complète &amp; test intégral</h2>
+        <p class="section-sub">Tous les éléments sont finis ; le jeu est testé dans les conditions réelles d'une partie, du déballage au rangement.</p>
+        <div class="day">
+          <div class="day-head">
+            <span class="day-badge">J4</span>
+            <div>
+              <h3>Fabrication complète &amp; test intégral</h3>
+              <span class="day-tag mono">FINITION + TEST GRANDEUR RÉELLE</span>
+            </div>
+          </div>
+          <div class="day-body full">
+            <ul>
+              <li>Finition de tous les éléments physiques (plateau, cartes, pions, boîte)</li>
+              <li>Test complet en conditions réelles : <strong>déballage → explication orale → partie complète → rangement</strong></li>
+            </ul>
+            <div class="callout alt">
+              <span class="callout-tag">Complément</span>
+              <p>Faire chronométrer ce cycle complet par les équipes et noter les points de friction (une règle mal comprise, un temps de mise en place trop long, un rangement qui ne retombe pas juste). Il reste encore la matinée du jour 5 pour corriger — mais seulement si les frictions ont été notées le jour 4.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="jour5">
+        <h2>Jour 5 — Finalisation &amp; restitution</h2>
+        <p class="section-sub">Dernières retouches le matin, présentation devant jury l'après-midi.</p>
+        <div class="day">
+          <div class="day-head">
+            <span class="day-badge">J5</span>
+            <div>
+              <h3>Finalisation &amp; restitution</h3>
+              <span class="day-tag mono">FINITION + JURY</span>
+            </div>
+          </div>
+          <div class="day-body">
+            <div class="halves">
+              <div class="half">
+                <div class="half-label">Matin</div>
+                <p>Finalisation : dernières retouches sur les règles et le matériel, répétition de la présentation devant le jury.</p>
+              </div>
+              <div class="half">
+                <div class="half-label">Après-midi</div>
+                <p>Jury : présentation du jeu par chaque équipe, avec démonstration ou partie test.</p>
+              </div>
+            </div>
+            <div class="callout alt">
+              <span class="callout-tag">Complément — format suggéré</span>
+              <p>Prévoir un créneau fixe par équipe (par ex. 20 min : 5 min de pitch, 10 min de démonstration jouée, 5 min de questions), pour que les 6 restitutions tiennent sur l'après-midi et restent comparables entre elles. Voir la grille d'évaluation dans les compléments ci-dessous.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="themes">
+        <h2>Thèmes proposés</h2>
+        <p class="section-sub">20 références de culture pop, très identifiables visuellement, en croisant œuvres installées et références actuelles pour parler à tous les groupes.</p>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr><th>Œuvre</th><th>Époque</th><th>Genre / univers</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Star Wars</td><td><span class="tag era-classique">Classique</span></td><td>Space opera</td></tr>
+              <tr><td>Harry Potter</td><td><span class="tag era-classique">Classique</span></td><td>Fantasy</td></tr>
+              <tr><td>Le Seigneur des Anneaux</td><td><span class="tag era-classique">Classique</span></td><td>Fantasy épique</td></tr>
+              <tr><td>Pirates des Caraïbes</td><td><span class="tag era-classique">Classique</span></td><td>Aventure</td></tr>
+              <tr><td>Friends</td><td><span class="tag era-classique">Classique</span></td><td>Comédie / sitcom</td></tr>
+              <tr><td>Buffy contre les vampires</td><td><span class="tag era-classique">Classique</span></td><td>Fantastique / horreur</td></tr>
+              <tr><td>Scooby-Doo</td><td><span class="tag era-classique">Classique</span></td><td>Mystère familial</td></tr>
+              <tr><td>X-Files</td><td><span class="tag era-classique">Classique</span></td><td>Thriller / mystère</td></tr>
+              <tr><td>Retour vers le futur</td><td><span class="tag era-classique">Classique</span></td><td>SF / aventure</td></tr>
+              <tr><td>Jurassic Park</td><td><span class="tag era-classique">Classique</span></td><td>Aventure / SF</td></tr>
+              <tr><td>Stranger Things</td><td><span class="tag era-contemporain">Contemporain</span></td><td>Horreur / fantastique</td></tr>
+              <tr><td>Squid Game</td><td><span class="tag era-contemporain">Contemporain</span></td><td>Thriller / survie</td></tr>
+              <tr><td>La Casa de Papel</td><td><span class="tag era-contemporain">Contemporain</span></td><td>Braquage / thriller</td></tr>
+              <tr><td>Arcane</td><td><span class="tag era-contemporain">Contemporain</span></td><td>Fantasy urbaine</td></tr>
+              <tr><td>Rick et Morty</td><td><span class="tag era-contemporain">Contemporain</span></td><td>SF absurde</td></tr>
+              <tr><td>Gossip Girl</td><td><span class="tag era-contemporain">Contemporain</span></td><td>Drame ado / société</td></tr>
+              <tr><td>Wednesday</td><td><span class="tag era-contemporain">Contemporain</span></td><td>Fantastique / mystère</td></tr>
+              <tr><td>Peaky Blinders</td><td><span class="tag era-contemporain">Contemporain</span></td><td>Drame historique</td></tr>
+              <tr><td>One Piece</td><td><span class="tag era-contemporain">Contemporain</span></td><td>Anime · aventure</td></tr>
+              <tr><td>Demon Slayer</td><td><span class="tag era-contemporain">Contemporain</span></td><td>Anime · fantastique</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section id="complements">
+        <h2>Compléments</h2>
+        <p class="section-sub">Outils pratiques pour cadrer la semaine côté encadrant.</p>
+
+        <div class="comp-grid">
+
+          <div class="card">
+            <h3>Répartition horaire indicative</h3>
+            <ul>
+              <li><strong>Matin</strong> — 9h00 à 12h30, mini-cours en première partie (environ 1h à 1h30), reste du temps en autonomie accompagnée</li>
+              <li><strong>Après-midi</strong> — 14h00 à 17h30, travail en équipe avec vos passages réguliers</li>
+              <li>Ajustez selon les horaires réels de l'école — la structure théorie/pratique compte plus que les créneaux exacts</li>
+            </ul>
+          </div>
+
+          <div class="card">
+            <h3>Livrables attendus, jour par jour</h3>
+            <ul>
+              <li><strong>J1</strong> — Fiche pitch (concept, type de jeu, public, matériel indispensable), groupe et thème actés</li>
+              <li><strong>J2</strong> — Moodboard / univers graphique, premiers éléments physiques bruts</li>
+              <li><strong>J3</strong> — Livret de règles v1, retour du playtest croisé</li>
+              <li><strong>J4</strong> — Set complet d'éléments fabriqués, compte-rendu du test intégral</li>
+              <li><strong>J5</strong> — Version finale et présentation devant jury</li>
+            </ul>
+          </div>
+
+          <div class="card">
+            <h3>Matériel &amp; outils à prévoir</h3>
+            <ul>
+              <li>Papier et carton de plusieurs grammages, feutres, cutters, règles, ciseaux</li>
+              <li>Dés vierges, pions et jetons neutres à personnaliser</li>
+              <li>Cartes vierges au format standard (63×88 mm ou 44×68 mm)</li>
+              <li>Accès à une impression couleur, idéalement une plastifieuse</li>
+              <li>Post-it et étiquettes pour le prototypage papier rapide</li>
+              <li>Découpe laser ou vinyle si disponible — confort, pas indispensable</li>
+            </ul>
+          </div>
+
+          <div class="card">
+            <h3>Points de vigilance</h3>
+            <ul>
+              <li><strong>Scope creep</strong> — trop de règles ou de mécaniques pour 5 jours ; pousser vers un cœur de jeu simple et solide plutôt qu'un système ambitieux mais bancal</li>
+              <li><strong>Thème plaqué</strong> — une mécanique copiée d'un jeu existant sans réelle adaptation au thème choisi</li>
+              <li><strong>Chara design irréaliste</strong> — des personnages trop détaillés pour être reproduits à la main en plusieurs exemplaires</li>
+              <li><strong>Règles jamais testées</strong> — provoquer un test interne dès que possible, même très incomplet, plutôt que d'attendre le playtest croisé</li>
+              <li><strong>Rangement oublié</strong> — le rangement et le transport font partie de l'expérience du jeu, pas juste la partie elle-même</li>
+            </ul>
+          </div>
+
+          <div class="card span2">
+            <h3>Grille d'évaluation — restitution jury</h3>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr><th>Critère</th><th>Ce qui est observé</th><th class="num">Poids</th></tr>
+                </thead>
+                <tbody>
+                  <tr><td>Concept &amp; pitch</td><td>Clarté de l'idée, originalité du croisement thème / mécanique</td><td class="num">15%</td></tr>
+                  <tr><td>Cohérence thème / univers</td><td>Le thème infuse mécaniques, DA et vocabulaire — pas seulement l'habillage</td><td class="num">15%</td></tr>
+                  <tr><td>Chara design &amp; direction artistique</td><td>Lisibilité, cohérence, qualité d'exécution</td><td class="num">15%</td></tr>
+                  <tr><td>Faisabilité matérielle</td><td>Le jeu a réellement été fabriqué dans les contraintes de temps et de coût</td><td class="num">10%</td></tr>
+                  <tr><td>Clarté du livret de règles</td><td>Structure, hiérarchie de l'information, exhaustivité</td><td class="num">15%</td></tr>
+                  <tr><td>Tutorisation orale</td><td>L'équipe explique clairement le jeu à un joueur néophyte, mise en place fluide</td><td class="num">15%</td></tr>
+                  <tr><td>Jouabilité</td><td>La partie se joue sans blocage majeur, plaisir de jeu ressenti</td><td class="num">15%</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <footer>
+        Atelier Jeux de Plateau — EArtSup Bordeaux · Document de préparation pédagogique
+      </footer>
+
+    </main>
+  </div>
+</div>
+
+<script>
+  (function(){
+    var links = Array.prototype.slice.call(document.querySelectorAll('.toc a'));
+    var sections = links.map(function(l){ return document.querySelector(l.getAttribute('href')); }).filter(Boolean);
+    if(!('IntersectionObserver' in window) || sections.length === 0) return;
+    var current = null;
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        if(entry.isIntersecting){
+          var id = '#' + entry.target.id;
+          if(current) current.classList.remove('active');
+          current = links.find(function(l){ return l.getAttribute('href') === id; });
+          if(current) current.classList.add('active');
+        }
+      });
+    }, { rootMargin: '-15% 0px -70% 0px', threshold: 0 });
+    sections.forEach(function(s){ io.observe(s); });
+  })();
+</script>
