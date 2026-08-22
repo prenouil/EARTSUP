@@ -1,0 +1,634 @@
+<title>Atelier Dev Mobile</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chivo:wght@400;700;900&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap">
+<style>
+  :root{
+    --bg:#E7ECEA;
+    --surface:#F4F8F6;
+    --surface-alt:#FFFFFF;
+    --ink:#152321;
+    --ink-soft:#4C5C58;
+    --ink-faint:#7C8C87;
+    --line:#CBD6D1;
+    --accent:#1E8F79;
+    --accent-strong:#146152;
+    --accent-2:#C97A2E;
+    --accent-2-strong:#93591C;
+    --dot: rgba(21,35,33,0.06);
+    --shadow: rgba(21,35,33,0.10);
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#111B19;
+      --surface:#17231F;
+      --surface-alt:#1D2B26;
+      --ink:#E7F0EC;
+      --ink-soft:#A9BDB6;
+      --ink-faint:#7A8F88;
+      --line:#2A3A34;
+      --accent:#3FBFA0;
+      --accent-strong:#8EE0CB;
+      --accent-2:#E5A15C;
+      --accent-2-strong:#F2C594;
+      --dot: rgba(231,240,236,0.05);
+      --shadow: rgba(0,0,0,0.4);
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#111B19;
+    --surface:#17231F;
+    --surface-alt:#1D2B26;
+    --ink:#E7F0EC;
+    --ink-soft:#A9BDB6;
+    --ink-faint:#7A8F88;
+    --line:#2A3A34;
+    --accent:#3FBFA0;
+    --accent-strong:#8EE0CB;
+    --accent-2:#E5A15C;
+    --accent-2-strong:#F2C594;
+    --dot: rgba(231,240,236,0.05);
+    --shadow: rgba(0,0,0,0.4);
+  }
+
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  @media (prefers-reduced-motion: reduce){ html{scroll-behavior:auto;} }
+
+  body{
+    margin:0;
+    background:var(--bg);
+    background-image: radial-gradient(var(--dot) 1px, transparent 1px);
+    background-size: 20px 20px;
+    color:var(--ink);
+    font-family:'IBM Plex Sans', system-ui, sans-serif;
+    line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  h1,h2,h3{
+    font-family:'Chivo', system-ui, sans-serif;
+    text-wrap:balance;
+    margin:0;
+    color:var(--ink);
+    letter-spacing:-0.01em;
+  }
+
+  .mono{ font-family:'IBM Plex Mono', ui-monospace, monospace; }
+
+  a{ color:var(--accent-strong); }
+  a:focus-visible, button:focus-visible, .toc a:focus-visible{
+    outline:2px solid var(--accent);
+    outline-offset:3px;
+  }
+
+  .page{ max-width:1180px; margin:0 auto; padding:0 24px 96px; }
+
+  /* ---------- HERO ---------- */
+  .hero{ padding:56px 0 36px; border-bottom:1px solid var(--line); margin-bottom:8px; }
+  .eyebrow{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:0.72rem;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    color:var(--accent-strong);
+    margin:0 0 14px;
+  }
+  .hero h1{
+    font-size:clamp(2.1rem, 4.2vw, 3.05rem);
+    font-weight:900;
+  }
+  .hero p.lede{
+    max-width:64ch;
+    margin:14px 0 0;
+    color:var(--ink-soft);
+    font-size:1.05rem;
+  }
+
+  .stat-strip{
+    display:flex; flex-wrap:wrap; gap:0;
+    margin-top:32px;
+    border:1px solid var(--line);
+    background:var(--surface);
+    border-radius:4px;
+    overflow:hidden;
+  }
+  .stat{ flex:1 1 160px; padding:16px 20px; border-right:1px solid var(--line); }
+  .stat:last-child{ border-right:none; }
+  .stat .label{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:0.66rem; letter-spacing:0.1em; text-transform:uppercase;
+    color:var(--ink-faint); display:block; margin-bottom:6px;
+  }
+  .stat .value{ font-family:'Chivo', sans-serif; font-weight:700; font-size:1.1rem; }
+
+  /* ---------- PIPELINE DIAGRAM ---------- */
+  .pipeline-block{
+    margin-top:32px;
+    border:1px solid var(--line);
+    background:var(--surface-alt);
+    border-radius:6px;
+    padding:24px;
+  }
+  .pipeline-block h2{ font-size:1.15rem; font-weight:700; margin-bottom:4px; }
+  .pipeline-block .section-sub{ margin:0 0 20px; }
+  .pipeline{
+    display:flex; align-items:stretch; gap:0;
+    flex-wrap:wrap;
+  }
+  .stage{
+    flex:1 1 150px;
+    background:var(--surface);
+    border:1px solid var(--line);
+    border-radius:6px;
+    padding:14px 16px;
+    display:flex; flex-direction:column; gap:6px;
+  }
+  .stage .stage-num{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:0.68rem; letter-spacing:0.08em;
+    color:var(--accent-strong);
+  }
+  .stage .stage-text{ font-family:'Chivo', sans-serif; font-weight:700; font-size:0.98rem; }
+  .arrow-h{
+    display:flex; align-items:center; justify-content:center;
+    width:36px; flex:none;
+    font-family:'IBM Plex Mono', monospace;
+    color:var(--ink-faint);
+    font-size:1.1rem;
+  }
+  .arrow-v{ display:none; }
+  @media (max-width: 720px){
+    .pipeline{ flex-direction:column; }
+    .arrow-h{ display:none; }
+    .arrow-v{
+      display:flex; align-items:center; justify-content:center;
+      height:26px;
+      font-family:'IBM Plex Mono', monospace;
+      color:var(--ink-faint);
+      font-size:1.1rem;
+    }
+  }
+  .pipeline-caption{
+    margin:16px 0 0;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:0.8rem;
+    color:var(--ink-soft);
+  }
+  .pipeline-caption strong{ color:var(--accent-strong); }
+
+  /* ---------- LAYOUT ---------- */
+  .layout{ display:grid; grid-template-columns:232px 1fr; gap:48px; align-items:start; padding-top:36px; }
+  @media (max-width: 880px){ .layout{ grid-template-columns:1fr; } }
+
+  .toc{ position:sticky; top:24px; display:flex; flex-direction:column; gap:2px; }
+  @media (max-width: 880px){
+    .toc{
+      position:static; flex-direction:row; flex-wrap:wrap; gap:8px;
+      padding-bottom:28px; border-bottom:1px solid var(--line); margin-bottom:8px;
+    }
+  }
+  .toc .toc-title{
+    font-family:'IBM Plex Mono', monospace; font-size:0.66rem; letter-spacing:0.1em;
+    text-transform:uppercase; color:var(--ink-faint); margin-bottom:10px;
+  }
+  @media (max-width: 880px){ .toc .toc-title{ display:none; } }
+  .toc a{
+    text-decoration:none; color:var(--ink-soft); font-size:0.92rem;
+    padding:6px 10px; border-radius:3px; border-left:2px solid transparent;
+  }
+  @media (max-width: 880px){
+    .toc a{ border:1px solid var(--line); border-radius:14px; font-family:'IBM Plex Mono', monospace; font-size:0.75rem; }
+  }
+  .toc a:hover{ color:var(--ink); background:var(--surface); }
+  .toc a.active{ color:var(--accent-strong); border-left-color:var(--accent); background:var(--surface); font-weight:600; }
+  @media (max-width: 880px){ .toc a.active{ border-color:var(--accent); background:var(--surface); } }
+
+  main{ min-width:0; }
+  section{ margin-bottom:64px; scroll-margin-top:24px; }
+  section > h2{ font-size:1.6rem; font-weight:700; margin-bottom:6px; }
+  section > .section-sub{ color:var(--ink-faint); font-size:0.92rem; margin:0 0 26px; }
+
+  /* ---------- DAY BLOCK ---------- */
+  .day{ border:1px solid var(--line); background:var(--surface); border-radius:6px; overflow:hidden; }
+  .day + .day{ margin-top:22px; }
+  .day-head{
+    display:flex; align-items:center; gap:16px;
+    padding:20px 24px; border-bottom:1px solid var(--line); background:var(--surface-alt);
+  }
+  .day-badge{
+    font-family:'Chivo', sans-serif; font-weight:900; font-size:1.2rem;
+    width:46px; height:46px; flex:none;
+    border-radius:12px;
+    border:2px solid var(--accent);
+    color:var(--accent-strong);
+    display:flex; align-items:center; justify-content:center;
+  }
+  .day-head h3{ font-size:1.18rem; font-weight:700; }
+  .day-head .day-tag{
+    font-family:'IBM Plex Mono', monospace; font-size:0.7rem; color:var(--ink-faint); letter-spacing:0.04em;
+  }
+  .day-body{ padding:24px; }
+
+  .halves{ display:grid; grid-template-columns:1fr 1fr; gap:22px; }
+  @media (max-width: 640px){ .halves{ grid-template-columns:1fr; } }
+
+  .half .half-label{
+    font-family:'IBM Plex Mono', monospace; font-size:0.68rem; letter-spacing:0.1em; text-transform:uppercase;
+    color:var(--ink-faint); padding-bottom:8px; margin-bottom:12px; border-bottom:2px solid var(--line);
+  }
+  .half ul{ margin:0; padding-left:1.15em; }
+  .half li{ margin-bottom:6px; }
+  .half p{ margin:0 0 10px; }
+
+  .callout{
+    border-left:3px solid var(--accent); background:var(--surface-alt);
+    border-radius:0 4px 4px 0; padding:14px 16px; margin:14px 0;
+  }
+  .callout .callout-tag{
+    display:inline-block; font-family:'IBM Plex Mono', monospace; font-size:0.65rem;
+    letter-spacing:0.1em; text-transform:uppercase; color:var(--accent-strong); margin-bottom:8px;
+  }
+  .callout.alt{ border-left-color:var(--accent-2); }
+  .callout.alt .callout-tag{ color:var(--accent-2-strong); }
+  .callout ul{ margin:0; padding-left:1.1em; }
+  .callout li{ margin-bottom:4px; }
+  .callout p:last-child{ margin-bottom:0; }
+
+  .full{ padding:24px; }
+
+  /* ---------- TABLES ---------- */
+  .table-wrap{ overflow-x:auto; border:1px solid var(--line); border-radius:6px; }
+  table{ border-collapse:collapse; width:100%; min-width:520px; font-size:0.94rem; }
+  thead th{
+    text-align:left; font-family:'IBM Plex Mono', monospace; font-size:0.68rem; letter-spacing:0.08em;
+    text-transform:uppercase; color:var(--ink-faint); background:var(--surface-alt);
+    padding:10px 14px; border-bottom:1px solid var(--line); white-space:nowrap;
+  }
+  tbody td{ padding:10px 14px; border-bottom:1px solid var(--line); vertical-align:top; }
+  tbody tr:last-child td{ border-bottom:none; }
+  tbody tr:nth-child(even){ background:var(--surface); }
+  td.num, th.num{ font-family:'IBM Plex Mono', monospace; font-variant-numeric:tabular-nums; }
+
+  /* ---------- COMPLEMENTS GRID ---------- */
+  .comp-grid{ display:grid; grid-template-columns:1fr 1fr; gap:20px; }
+  @media (max-width: 720px){ .comp-grid{ grid-template-columns:1fr; } }
+  .card{ border:1px solid var(--line); background:var(--surface); border-radius:6px; padding:20px 22px; }
+  .card h3{ font-size:1.0rem; font-weight:700; margin-bottom:10px; }
+  .card ul{ margin:0; padding-left:1.15em; }
+  .card li{ margin-bottom:6px; }
+  .card.span2{ grid-column:1 / -1; }
+
+  code{
+    font-family:'IBM Plex Mono', monospace;
+    background:var(--surface);
+    border:1px solid var(--line);
+    border-radius:3px;
+    padding:1px 6px;
+    font-size:0.88em;
+  }
+
+  footer{
+    margin-top:24px; padding-top:24px; border-top:1px solid var(--line);
+    color:var(--ink-faint); font-size:0.82rem;
+  }
+</style>
+
+<div class="page">
+
+  <header class="hero">
+    <p class="eyebrow">EArtSup Bordeaux · Atelier de développement</p>
+    <h1>Développement Jeu Mobile — Semaine d'atelier</h1>
+    <p class="lede">Cinq jours pour apprendre à développer un jeu mobile de bout en bout : un match-3 codé sur PC, mais exporté et testé sur téléphone Android dès le premier jour. Le match-3 est le prétexte — le vrai sujet de la semaine, c'est la boucle de développement mobile elle-même.</p>
+    <div class="stat-strip">
+      <div class="stat"><span class="label">Durée</span><span class="value">5 jours</span></div>
+      <div class="stat"><span class="label">Équipes</span><span class="value">6 groupes de 6</span></div>
+      <div class="stat"><span class="label">Contrainte</span><span class="value">Match-3 imposé, thème libre</span></div>
+      <div class="stat"><span class="label">Plateforme</span><span class="value">Android · test sur device réel</span></div>
+      <div class="stat"><span class="label">Moteur</span><span class="value">Godot 4 · GDScript</span></div>
+    </div>
+
+    <div class="pipeline-block">
+      <h2>La boucle qui structure la semaine</h2>
+      <p class="section-sub">Pas le match-3 : cette boucle. Elle se met en place dès le J1 et se répète chaque après-midi.</p>
+      <div class="pipeline">
+        <div class="stage"><span class="stage-num mono">01</span><span class="stage-text">Coder sur PC</span></div>
+        <div class="arrow-h">→</div><div class="arrow-v">↓</div>
+        <div class="stage"><span class="stage-num mono">02</span><span class="stage-text">Exporter l'APK</span></div>
+        <div class="arrow-h">→</div><div class="arrow-v">↓</div>
+        <div class="stage"><span class="stage-num mono">03</span><span class="stage-text">Déployer en USB</span></div>
+        <div class="arrow-h">→</div><div class="arrow-v">↓</div>
+        <div class="stage"><span class="stage-num mono">04</span><span class="stage-text">Tester sur téléphone</span></div>
+      </div>
+      <p class="pipeline-caption">→ <strong>répétée chaque après-midi, dès le J1</strong> — le déploiement mobile n'est plus un événement de fin de semaine, c'est le rythme de l'atelier.</p>
+    </div>
+  </header>
+
+  <div class="layout">
+    <nav class="toc" id="toc">
+      <span class="toc-title">Sommaire</span>
+      <a href="#stack">Stack &amp; outils</a>
+      <a href="#jour1">Jour 1 — Pipeline mobile</a>
+      <a href="#jour2">Jour 2 — Gameplay</a>
+      <a href="#jour3">Jour 3 — Boucle complète</a>
+      <a href="#jour4">Jour 4 — Polish &amp; robustesse</a>
+      <a href="#jour5">Jour 5 — Restitution</a>
+      <a href="#complements">Compléments</a>
+    </nav>
+
+    <main>
+
+      <section id="stack">
+        <h2>Stack &amp; outils</h2>
+        <p class="section-sub">Choisi pour un niveau "quelques notions" de code et une contrainte Android uniquement — pas de Mac, pas de compte développeur à payer.</p>
+        <div class="comp-grid">
+          <div class="card">
+            <h3>Moteur — Godot 4.x</h3>
+            <ul>
+              <li>Gratuit et open source, aucune licence à gérer</li>
+              <li>GDScript proche de Python — accessible avec de "quelques notions" de programmation</li>
+              <li>Excellent en 2D, parfaitement adapté à une grille match-3</li>
+              <li>Export Android natif, déploiement direct sur téléphone en USB</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h3>Assets &amp; son</h3>
+            <ul>
+              <li>Graphismes : les outils déjà connus des élèves (Photoshop, Illustrator, Procreate), export PNG</li>
+              <li>Pixel art animé : Aseprite si besoin</li>
+              <li>SFX placeholder : <code>freesound.org</code>, filtré sur licence CC0</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h3>Test mobile</h3>
+            <ul>
+              <li>Téléphones Android personnels des élèves, débogage USB activé</li>
+              <li>Câbles USB adaptés fournis par l'école</li>
+              <li>1 à 2 téléphones de secours côté école pour les groupes sans device compatible</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h3>Versionnage</h3>
+            <ul>
+              <li>Optionnel vu le temps disponible — un repo Git par équipe si le temps le permet</li>
+              <li>Sinon, sauvegardes manuelles horodatées suffisent sur 5 jours</li>
+            </ul>
+          </div>
+        </div>
+        <div class="callout alt" style="margin-top:20px;">
+          <span class="callout-tag">Point critique — à faire avant le J1</span>
+          <p>Installez Godot + Android SDK + export templates + JDK sur <strong>tous les postes avant le premier jour</strong>. C'est le principal piège technique : configurer la chaîne d'export Android en direct devant les élèves peut faire perdre une demi-journée entière.</p>
+        </div>
+      </section>
+
+      <section id="jour1">
+        <h2>Jour 1 — Pipeline mobile</h2>
+        <p class="section-sub">Le cœur de l'atelier arrive dès aujourd'hui : chaque poste valide la chaîne complète PC → téléphone avant la fin de la journée.</p>
+        <div class="day">
+          <div class="day-head">
+            <span class="day-badge">J1</span>
+            <div>
+              <h3>Pipeline mobile</h3>
+              <span class="day-tag mono">THÉORIE + VALIDATION DE LA CHAÎNE D'EXPORT</span>
+            </div>
+          </div>
+          <div class="day-body">
+            <div class="halves">
+              <div class="half">
+                <div class="half-label">Matin</div>
+                <div class="callout">
+                  <span class="callout-tag">Mini-cours</span>
+                  <ul>
+                    <li><strong>Mobile vs PC</strong> — tactile vs souris/clavier, tailles et orientations d'écran, contraintes de performance, cycle de vie de l'appli (pause/reprise)</li>
+                    <li><strong>Chaîne d'export Android</strong> — SDK, JDK, keystore de debug, export template Godot</li>
+                    <li><strong>Prise en main Godot</strong> — scènes, nodes, GDScript (condensé)</li>
+                  </ul>
+                </div>
+              </div>
+              <div class="half">
+                <div class="half-label">Après-midi</div>
+                <p><strong>Mini-projet « Hello Mobile »</strong> : une scène volontairement triviale (un bouton ou sprite tactile, ex. un compteur qui s'incrémente au tap), exportée et déployée sur le téléphone de chaque élève avant la fin de la journée.</p>
+                <ul>
+                  <li>Objectif : chaque poste a validé la chaîne PC → mobile dès J1, plus jamais un blocage dessus ensuite</li>
+                  <li>Formation des groupes et réflexion sur le thème du match-3, en parallèle ou en fin de journée</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="jour2">
+        <h2>Jour 2 — Cœur du gameplay</h2>
+        <p class="section-sub">La grille et la détection de match : la mécanique centrale du match-3, pensée pour le tactile dès le départ.</p>
+        <div class="day">
+          <div class="day-head">
+            <span class="day-badge">J2</span>
+            <div>
+              <h3>Cœur du gameplay</h3>
+              <span class="day-tag mono">GRILLE + SWAP + MATCH</span>
+            </div>
+          </div>
+          <div class="day-body">
+            <div class="halves">
+              <div class="half">
+                <div class="half-label">Matin — mini-cours</div>
+                <ul>
+                  <li>Grille 2D : représenter le plateau en tableau, coordonnées lignes/colonnes</li>
+                  <li>Algorithme de détection de match (alignements de 3+)</li>
+                  <li>Adapter les inputs : drag/swipe tactile plutôt que clic souris</li>
+                </ul>
+              </div>
+              <div class="half">
+                <div class="half-label">Après-midi — prod</div>
+                <ul>
+                  <li>Implémentation grille + swap + détection + suppression des tuiles matchées</li>
+                  <li>Déploiement et test sur téléphone en fin de journée — la boucle du J1 devient routine</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="jour3">
+        <h2>Jour 3 — Boucle complète</h2>
+        <p class="section-sub">Cascade, score, et premières vraies contraintes d'interface mobile.</p>
+        <div class="day">
+          <div class="day-head">
+            <span class="day-badge">J3</span>
+            <div>
+              <h3>Boucle complète</h3>
+              <span class="day-tag mono">CASCADE + SCORE + UI MOBILE</span>
+            </div>
+          </div>
+          <div class="day-body">
+            <div class="halves">
+              <div class="half">
+                <div class="half-label">Matin — mini-cours</div>
+                <ul>
+                  <li>Gravité et cascade : génération procédurale des nouvelles tuiles</li>
+                  <li>Score, timer, objectifs de partie</li>
+                  <li>UI mobile : zones tactiles ≥ 44×44 px, lisibilité sur petit écran</li>
+                </ul>
+              </div>
+              <div class="half">
+                <div class="half-label">Après-midi — prod</div>
+                <ul>
+                  <li>Implémentation refill + score + UI</li>
+                  <li>Test sur téléphone : premier vrai passage en revue de l'ergonomie tactile</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="jour4">
+        <h2>Jour 4 — Polish &amp; robustesse mobile</h2>
+        <p class="section-sub">Ce qui distingue un prototype d'une appli : la performance et la résistance aux imprévus du monde réel.</p>
+        <div class="day">
+          <div class="day-head">
+            <span class="day-badge">J4</span>
+            <div>
+              <h3>Polish &amp; robustesse mobile</h3>
+              <span class="day-tag mono">PERF + INTERRUPTIONS + FINITIONS</span>
+            </div>
+          </div>
+          <div class="day-body">
+            <div class="halves">
+              <div class="half">
+                <div class="half-label">Matin — mini-cours</div>
+                <ul>
+                  <li>Optimisation perf mobile : taille des textures, draw calls, framerate</li>
+                  <li>Gestion des interruptions : appel entrant, verrouillage écran, changement d'orientation</li>
+                  <li>Icône d'application, écran de démarrage (splash)</li>
+                </ul>
+              </div>
+              <div class="half">
+                <div class="half-label">Après-midi — prod</div>
+                <ul>
+                  <li>Finitions gameplay : sons, animations, retours visuels</li>
+                  <li>Test complet de bout en bout sur téléphone (partie jouée du début à la fin)</li>
+                </ul>
+              </div>
+            </div>
+            <div class="callout alt">
+              <span class="callout-tag">Complément</span>
+              <p>Provoquer volontairement une interruption pendant un test (appel simulé, verrouillage de l'écran) : c'est le genre de bug qu'on ne découvre jamais en testant sur PC, et qui doit être corrigé avant le J5, pas découvert devant le jury.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="jour5">
+        <h2>Jour 5 — Restitution</h2>
+        <p class="section-sub">Les derniers bugs remontés dans la semaine se corrigent le matin ; le jeu se présente là où il doit vivre : sur le téléphone.</p>
+        <div class="day">
+          <div class="day-head">
+            <span class="day-badge">J5</span>
+            <div>
+              <h3>Restitution</h3>
+              <span class="day-tag mono">CORRECTIONS + JURY</span>
+            </div>
+          </div>
+          <div class="day-body">
+            <div class="halves">
+              <div class="half">
+                <div class="half-label">Matin</div>
+                <p>Correction des derniers bugs remontés par les tests device accumulés dans la semaine, signing final de l'APK.</p>
+              </div>
+              <div class="half">
+                <div class="half-label">Après-midi</div>
+                <p>Jury : chaque équipe présente son jeu et le fait jouer en direct sur son téléphone.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="complements">
+        <h2>Compléments</h2>
+        <p class="section-sub">Outils pratiques pour cadrer la semaine côté encadrant.</p>
+        <div class="comp-grid">
+
+          <div class="card">
+            <h3>Checklist d'installation — avant le J1</h3>
+            <ul>
+              <li>Godot 4.x installé sur chaque poste</li>
+              <li>Android SDK + export templates Godot téléchargés</li>
+              <li>JDK installé et référencé dans Godot</li>
+              <li>Keystore de debug généré sur chaque poste</li>
+              <li>Débogage USB activé sur les téléphones des élèves (à demander en amont)</li>
+            </ul>
+          </div>
+
+          <div class="card">
+            <h3>Livrables attendus, jour par jour</h3>
+            <ul>
+              <li><strong>J1</strong> — chaîne d'export validée (Hello Mobile déployé), groupe et thème actés</li>
+              <li><strong>J2</strong> — grille + swap + match fonctionnels, testés sur téléphone</li>
+              <li><strong>J3</strong> — cascade + score + UI mobile fonctionnels, testés sur téléphone</li>
+              <li><strong>J4</strong> — version complète jouable de bout en bout, perf optimisée</li>
+              <li><strong>J5</strong> — version finale, présentation jury sur téléphone</li>
+            </ul>
+          </div>
+
+          <div class="card">
+            <h3>Points de vigilance</h3>
+            <ul>
+              <li><strong>Chaîne d'export non testée avant J1</strong> — sans installation en amont, une bonne partie du J1 après-midi part en dépannage technique</li>
+              <li><strong>Zones tactiles trop petites</strong> — réflexe hérité d'une UI pensée pour la souris ; viser au moins 44×44 px</li>
+              <li><strong>Test superficiel</strong> — « ça s'installe » n'est pas « ça se joue » : tester en conditions réelles (extérieur, une seule main)</li>
+              <li><strong>Interruptions négligées</strong> — appel entrant, mise en veille, rotation d'écran : à tester explicitement en J4</li>
+              <li><strong>Assets trop lourds</strong> — sensibiliser tôt à l'optimisation plutôt que la découvrir en pompier le dernier jour</li>
+            </ul>
+          </div>
+
+          <div class="card span2">
+            <h3>Grille d'évaluation — restitution jury</h3>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr><th>Critère</th><th>Ce qui est observé</th><th class="num">Poids</th></tr>
+                </thead>
+                <tbody>
+                  <tr><td>Build &amp; déploiement</td><td>Le jeu s'installe et tourne sur le téléphone sans bug bloquant</td><td class="num">20%</td></tr>
+                  <tr><td>Boucle de jeu match-3</td><td>Swap, match, cascade et score fonctionnent correctement</td><td class="num">20%</td></tr>
+                  <tr><td>Ergonomie tactile</td><td>Zones tactiles adaptées, lisibilité sur petit écran, retour au toucher</td><td class="num">15%</td></tr>
+                  <tr><td>Robustesse &amp; performance</td><td>Framerate stable, gestion correcte des interruptions</td><td class="num">15%</td></tr>
+                  <tr><td>Originalité &amp; finition</td><td>Thème, direction artistique, sons, niveau de polish</td><td class="num">15%</td></tr>
+                  <tr><td>Présentation du pipeline</td><td>L'équipe explique comment le jeu passe du PC au téléphone</td><td class="num">15%</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <footer>
+        Atelier Développement Jeu Mobile — EArtSup Bordeaux · Document de préparation pédagogique
+      </footer>
+
+    </main>
+  </div>
+</div>
+
+<script>
+  (function(){
+    var links = Array.prototype.slice.call(document.querySelectorAll('.toc a'));
+    var sections = links.map(function(l){ return document.querySelector(l.getAttribute('href')); }).filter(Boolean);
+    if(!('IntersectionObserver' in window) || sections.length === 0) return;
+    var current = null;
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        if(entry.isIntersecting){
+          var id = '#' + entry.target.id;
+          if(current) current.classList.remove('active');
+          current = links.find(function(l){ return l.getAttribute('href') === id; });
+          if(current) current.classList.add('active');
+        }
+      });
+    }, { rootMargin: '-15% 0px -70% 0px', threshold: 0 });
+    sections.forEach(function(s){ io.observe(s); });
+  })();
+</script>
