@@ -1,0 +1,11 @@
+# Mémoire agent_prof
+
+Index des apprentissages sur la conception des supports de cours EARTSUP. Chaque entrée pointe vers un fichier détaillé dans ce dossier.
+
+- [Format wiki, jamais diaporama](feedback_format-wiki.md) — structure hero/toc/seq à reprendre pour tout nouveau support
+- [Ton neutre pour documents partagés](feedback_ton-partage.md) — retirer notes d'intention et tournures internes
+- [Titres fusionnés "Catégorie : Titre"](feedback_titres-fusionnes.md) — sur demande, remplace titre + étiquette séparée
+- [Contenu enrichi en listes à puces](feedback_contenu-detaille.md) — préférer plusieurs points détaillés à une phrase compacte
+- [Pauses invisibles, durée totale préservée](feedback_horaires-pauses.md) — redistribuer les minutes plutôt que les afficher
+- [Sauts de page et export PDF](feedback_export-pdf.md) — méthode validée pour une version partageable
+- [Supports de référence EARTSUP](reference_supports-existants.md) — les 4 documents modèles et leurs copies locales
