@@ -9,3 +9,4 @@ Index des apprentissages sur la conception des supports de cours EARTSUP. Chaque
 - [Pauses invisibles, durée totale préservée](feedback_horaires-pauses.md) — redistribuer les minutes plutôt que les afficher
 - [Sauts de page et export PDF](feedback_export-pdf.md) — méthode validée pour une version partageable
 - [Supports de référence EARTSUP](reference_supports-existants.md) — les 4 documents modèles et leurs copies locales
+- [Accueil épuré](feedback_accueil-epure.md) — la page Accueil d'un wiki ne garde que le déroulé du cours, pas le contexte pédagogique ni les instructions d'usage ni les marqueurs de modulabilité
