@@ -10,3 +10,4 @@ Index des apprentissages sur la conception des supports de cours EARTSUP. Chaque
 - [Sauts de page et export PDF](feedback_export-pdf.md) — méthode validée pour une version partageable
 - [Supports de référence EARTSUP](reference_supports-existants.md) — les 4 documents modèles et leurs copies locales
 - [Accueil épuré](feedback_accueil-epure.md) — la page Accueil d'un wiki ne garde que le déroulé du cours, pas le contexte pédagogique ni les instructions d'usage ni les marqueurs de modulabilité
+- [Facettes des exemples de jeux](feedback_facettes-exemples-jeux.md) — préférer genre + taille/budget + "type de vue" (tag court, évocateur) plutôt qu'éditeur/studio et plateforme
