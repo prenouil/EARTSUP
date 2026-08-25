@@ -11,3 +11,4 @@ Index des apprentissages sur la conception des supports de cours EARTSUP. Chaque
 - [Supports de référence EARTSUP](reference_supports-existants.md) — les 4 documents modèles et leurs copies locales
 - [Accueil épuré](feedback_accueil-epure.md) — la page Accueil d'un wiki ne garde que le déroulé du cours, pas le contexte pédagogique ni les instructions d'usage ni les marqueurs de modulabilité
 - [Facettes des exemples de jeux](feedback_facettes-exemples-jeux.md) — préférer genre + taille/budget + "type de vue" (tag court, évocateur) plutôt qu'éditeur/studio et plateforme
+- [Analyse critique des études de cas](feedback_analyse-critique-etude-de-cas.md) — dans une critique de fond demandée sur une étude de cas, nuancer les absolus, lever les contradictions, transformer les affirmations non prouvées en questions ouvertes, garder le cadre des 5 axes du cours
