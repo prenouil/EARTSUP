@@ -487,19 +487,27 @@ QUESTIONS DE RELANCE
     <h2 class="section-h">Séquençage</h2>
     <table class="seq">
       <tr><th>Horaire</th><th>Bloc</th><th>Durée</th></tr>
-      <tr><td class="t">0:00</td><td>Pourquoi un GDD ? Mythes vs réalité — ce n'est pas un roman, c'est un outil de com'</td><td class="d">15 min</td></tr>
-      <tr><td class="t">0:15</td><td>Le GDD court — structure type (pitch, pilier, boucle core, référence), rédigé en direct sur un jeu connu</td><td class="d">40 min</td></tr>
-      <tr><td class="t">0:55</td><td>Le GDD moyen terme (vertical slice) — systèmes détaillés, économie, contenu prévisionnel</td><td class="d">35 min</td></tr>
-      <tr><td class="t">1:30</td><td>Le GDD long terme — document vivant, versionning, qui le maintient (lien avec les rôles de S1)</td><td class="d">20 min</td></tr>
+      <tr><td class="t">0:00</td><td>Pourquoi un GDD ? Mythes vs réalité — ce n'est pas un roman, c'est un outil de communication</td><td class="d">15 min</td></tr>
+      <tr><td class="t">0:15</td><td>Le GDD court — structure type (pitch, pilier, boucle core, référence), rédaction en direct sur un jeu connu</td><td class="d">40 min</td></tr>
+      <tr><td class="t">0:55</td><td>Le GDD moyen terme : Vertical Slice — systèmes détaillés, économie, contenu prévisionnel</td><td class="d">35 min</td></tr>
+      <tr><td class="t">1:30</td><td>Le GDD long terme — bible des systèmes et du contenu, document vivant, versionning, maintenu à plusieurs mains selon les rôles vus en S1</td><td class="d">20 min</td></tr>
       <tr><td class="t">1:50</td><td>Brief de l'après-midi</td><td class="d">10 min</td></tr>
     </table>
 
     <h2 class="section-h">Notions clés</h2>
-    <div class="notion"><h3>GDD court — 1 à 2 pages</h3><p>Pitch, pilier de design, boucle core, références. Sert à vendre une idée et cadrer un prototype rapide.</p></div>
-    <div class="notion"><h3>GDD moyen terme — 5 à 15 pages</h3><p>Détaille les systèmes, l'économie, une estimation du contenu. Sert à cadrer une vertical slice ou une soutenance.</p></div>
-    <div class="notion"><h3>GDD long terme — document vivant</h3><p>Versionné, maintenu à plusieurs mains selon les rôles de designer. Sert de référence pendant toute la production.</p></div>
+    <div class="notion">
+      <h3>GDD court — 1 à 2 pages</h3>
+      <ul class="obj-list">
+        <li>Pitch</li>
+        <li>Pilier de design</li>
+        <li>Boucle core</li>
+        <li>Choix graphiques</li>
+        <li>Références</li>
+      </ul>
+      <p>Sert à vendre une idée et cadrer un prototype rapide.</p>
+    </div>
 
-    <h2 class="section-h">Exemples — pitchs de GDD court</h2>
+    <div class="example-subhead">Exemples — pitchs de GDD court</div>
     <div class="example-grid">
       <div class="example-card"><div class="game">Portal</div><div class="facets"><span>Valve</span><span>PC</span><span>Puzzle-FPS</span><span>AAA</span></div><div class="why">« Un puzzle-FPS où l'arme ne tue pas, elle connecte l'espace. »</div></div>
       <div class="example-card"><div class="game">Papers, Please</div><div class="facets"><span>Lucas Pope</span><span>PC/Mobile</span><span>Simulation bureaucratique</span><span>Solo dev</span></div><div class="why">« Un poste-frontière où la paperasse devient un dilemme moral. »</div></div>
@@ -507,9 +515,69 @@ QUESTIONS DE RELANCE
       <div class="example-card"><div class="game">Vampire Survivors</div><div class="facets"><span>poncle</span><span>PC/Mobile/Console</span><span>Roguelite</span><span>Solo dev</span></div><div class="why">« Une seule action — courir — pendant que tout combat pour vous. »</div></div>
       <div class="example-card"><div class="game">Untitled Goose Game</div><div class="facets"><span>House House</span><span>PC/Console</span><span>Comédie / puzzle</span><span>Indé (petite équipe)</span></div><div class="why">« Être une oie insupportable dans un village anglais. »</div></div>
     </div>
+    <div class="callout"><b>Exercice</b><span>Faire des pitchs courts sur d'autres jeux à succès connus (AAA, indépendant, vieux jeux, …).</span></div>
+
+    <div class="notion">
+      <h3>GDD moyen terme — 5 à 15 pages</h3>
+      <p>Détaille :</p>
+      <ul class="obj-list">
+        <li>Les systèmes</li>
+        <li>L'économie</li>
+        <li>Le contenu et le temps de jeu</li>
+        <li>La charge de production</li>
+      </ul>
+      <p>Sert à cadrer une vertical slice ou une soutenance.</p>
+    </div>
+
+    <div class="notion">
+      <h3>À ne pas mettre dans un GDD moyen terme</h3>
+      <ul class="obj-list">
+        <li>Dialogues ou script narratif complet — relève d'une bible narrative séparée</li>
+        <li>Listing exhaustif d'assets (chaque texture, chaque son) — document de production, pas de design</li>
+        <li>Name-dropping marketing (« le nouveau [jeu à succès] ») sans traduction en choix de gameplay</li>
+        <li>Lore ou univers non connecté à une mécanique ou un système jouable</li>
+        <li>Wishlist de features sans priorisation ni arbitrage</li>
+        <li>Code ou pseudo-code d'implémentation technique</li>
+        <li>Clauses contractuelles, légales ou de licence</li>
+        <li>Mood board sans note d'intention de production reliée</li>
+        <li>Planning détaillé jour par jour — relève d'un outil Kanban/Scrum</li>
+        <li>Argumentaire commercial pur (pricing, stratégie de lancement) sans lien design</li>
+      </ul>
+    </div>
+
+    <div class="notion">
+      <h3>GDD long terme — document vivant</h3>
+      <ul class="obj-list">
+        <li>Versionné</li>
+        <li>Maintenu à plusieurs mains selon les rôles vus en S1</li>
+        <li>Sert de référence à toute l'équipe pendant toute la production</li>
+      </ul>
+    </div>
+
+    <div class="callout"><b>Exercice</b><span>Que doit contenir un GDD en prod ?</span></div>
+    <ul class="obj-list">
+      <li>High concept / pitch</li>
+      <li>Piliers de design</li>
+      <li>Boucle de gameplay core et boucles secondaires</li>
+      <li>Systèmes détaillés : combat, progression, économie, craft, IA</li>
+      <li>Level design : guidelines, structure des niveaux, gating, courbe de difficulté</li>
+      <li>UX/UI : wireframes, feedback joueur, ergonomie des menus</li>
+      <li>Bible narrative : personnages, structure du récit, moments-clés (document lié, pas recopié)</li>
+      <li>Direction artistique : références visuelles, palette, style</li>
+      <li>Direction sonore et musicale : intentions, références, moments-clés</li>
+      <li>Contraintes techniques : plateformes cibles, moteur, specs de performance</li>
+      <li>Plan de contenu : liste des niveaux/features avec priorité et statut</li>
+      <li>Jalons de production : milestones, roadmap</li>
+      <li>Rôles et responsabilités de l'équipe — qui maintient quelle section</li>
+      <li>Plan de QA/test : critères de validation, protocole</li>
+      <li>Accessibilité : sous-titres, remapping, options daltonisme</li>
+      <li>Localisation : langues cibles, contraintes de texte</li>
+      <li>Plan post-lancement / live-ops si pertinent : contenu additionnel, mises à jour</li>
+      <li>Historique de versions / changelog</li>
+    </ul>
 
     <h2 class="section-h">Après-midi</h2>
-    <div class="pm-link"><span class="tag-am">3h</span><p>Rédiger un GDD court (one-pager) en s'appuyant sur ce qui a été vu depuis mardi.<span class="tool">Format — papier / texte</span></p></div>
+    <div class="pm-link"><span class="tag-am">3h</span><p>Rédiger un GDD court (one-pager) ET l'ébauche d'un GDD moyen terme (une page maximum, en liste à puces, listant les systèmes clés sans les développer) d'une démo Steam de son choix, en s'appuyant sur ce qui a été vu depuis mardi.<span class="tool">Format — papier / texte</span></p></div>
 
     <h2 class="section-h">Notes personnelles</h2>
     <textarea class="notes" data-id="s4"></textarea>
