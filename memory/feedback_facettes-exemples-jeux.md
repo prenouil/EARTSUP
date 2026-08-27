@@ -1,12 +1,12 @@
 ---
 name: facettes-exemples-jeux
-description: Facettes des cartes d'exemple de jeu — préférer genre + taille/budget + "type de vue" (tag court et évocateur) plutôt qu'éditeur/studio et plateforme.
+description: Facettes des cartes d'exemple de jeu — garder studio/éditeur ET plateforme, en plus du genre, de la taille/budget et du "type de vue".
 metadata:
   type: feedback
 ---
 
-Dans les cartes `.example-card` (`example-grid`), l'utilisateur préfère ne PAS afficher l'éditeur/studio ni la plateforme comme facettes. Il garde le genre et la taille/budget, et ajoute un tag "type de vue" : un mot ou une expression courte et évocatrice (2D, FPS, TPS Action, Isométrique, Verticalité, Mignon, Plans fixes, Vue du dessus...) qui capture soit l'angle caméra soit une esthétique/sensation marquante de gameplay — pas une catégorie rigide.
+Dans les cartes `.example-card` (`example-grid`), l'utilisateur veut TOUJOURS afficher le studio/éditeur et la plateforme comme facettes, en plus du genre, de la taille/budget, et du tag "type de vue" : un mot ou une expression courte et évocatrice (2D, FPS, TPS Action, Isométrique, Verticalité, Mignon, Plans fixes, Vue du dessus...) qui capture soit l'angle caméra soit une esthétique/sensation marquante de gameplay — pas une catégorie rigide.
 
-**Pourquoi :** L'éditeur/studio et la plateforme n'apportent rien de pédagogique dans ce contexte ; un tag de type de vue est plus parlant visuellement et aide les étudiants à se projeter dans le jeu (cf. retouche de la section "Notions clés — les familles de designer" du support Remise à niveau Bachelor 3, où toutes les cartes sont passées de 4 facettes éditeur/plateforme/genre/taille à 3 facettes genre/taille/type de vue).
+**Historique :** une préférence inverse (retirer studio/éditeur et plateforme) avait été appliquée une seule fois, sur la section "Notions clés — les familles de designer" du support Remise à niveau Bachelor 3. L'utilisateur est revenu dessus : "c'est une donnée importante que tu indiques à chaque fois." Studio/éditeur et plateforme ont été restaurés sur cette section (en gardant le tag "type de vue" ajouté entre-temps), et cette règle s'applique maintenant partout, y compris pour toute nouvelle carte à créer.
 
-**Comment l'appliquer :** Pour toute nouvelle carte d'exemple de jeu ou refonte d'une section existante avec ce composant, structurer les facettes comme `<span>genre</span><span>taille ou budget</span><span>type de vue</span>` (l'ordre des deux premières spans reste tel quel, le type de vue est ajouté en dernier). Ne pas ajouter éditeur/studio/plateforme sauf demande explicite contraire. Inventer un tag cohérent avec le jeu réel si l'utilisateur ne le précise pas, dans le même esprit concis et un peu accrocheur que ses propres exemples.
+**Comment l'appliquer :** structurer les facettes comme `<span>studio/éditeur</span><span>plateforme</span><span>genre</span><span>taille ou budget</span><span>type de vue</span>` — 5 facettes dans cet ordre. Ne plus jamais retirer studio/éditeur ou plateforme sans confirmation explicite de l'utilisateur, même si une demande ponctuelle de simplification est faite sur une section précise — vérifier d'abord si elle doit s'appliquer partout ou seulement à l'endroit demandé.
