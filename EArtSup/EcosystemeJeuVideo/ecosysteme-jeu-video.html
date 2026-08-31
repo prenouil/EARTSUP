@@ -1,0 +1,701 @@
+<!doctype html><html><head><!-- frame-runtime --><base href="/_f/1787584704-947d/"><script>window.__FRAME_PREAMBLE={"v":1,"capabilities":{"artifact":"artifact.D_F1mx8d.js","assets":"assets.8Gk803W0.js","comments":"comments.GLuHR3zP.js","db":"db.h-3sndFg.js","downloads":"downloads.C3GSvEDP.js","embed":"embed.CxGAyc-v.js","mcp":"mcp.Bvma3qD7.js","network":"network.B5UA9Su4.js","notifications":"notifications.ssU4jy7G.js","permissions":"permissions.BNySkLV5.js","room":"room.BMMoe2BY.js","sample":"sample.BW2Uysoh.js","self":"artifact.D_F1mx8d.js","user":"user.BpKav-Rf.js"},"transforms":"_transforms.DSB5x63f.js","comments":"_comments.BoakUwmM.js","translate":"_translate.5HCW4BJh.js"}</script><script>(function(){"use strict";var te=["light","dark","system"],re=/^[A-Za-z0-9_-]{1,64}$/,$=/^[a-zA-Z_:][a-zA-Z0-9_:.-]{0,127}$/,ne=new Set(["class","hidden","value","checked","style","title","alt","placeholder","lang","dir","role","tabindex","disabled","readonly","contenteditable","open","colspan","rowspan"]);function oe(e){const t=e.toLowerCase();return t.startsWith("data-")||t.startsWith("aria-")||ne.has(t)}var Be="http://www.w3.org/1999/xhtml",se="http://www.w3.org/2000/svg",ae=new Set(["script","style","iframe","noscript","noframes","noembed","xmp","plaintext","template","title","textarea","object","embed"]),ie=new Set(["script","style"]);function ce(e){const t=e.localName.toLowerCase();return e.namespaceURI==="http://www.w3.org/1999/xhtml"?!ae.has(t):e.namespaceURI===se?!ie.has(t):!1}function M(e,t){return e===t||(e===160||e===32)&&(t===160||t===32)}function le(e,t){const r=e.length,n=t.length;let s=0;for(;s<r&&s<n&&M(e.charCodeAt(s),t.charCodeAt(s));)s++;let o=0;for(;o<r-s&&o<n-s&&M(e.charCodeAt(r-1-o),t.charCodeAt(n-1-o));)o++;return{p:s,s:o}}function ue(e,t){const r=e.firstChild;if(e.childNodes.length!==1||r===null||r.nodeType!==Node.TEXT_NODE){e.textContent=t;return}const n=r.data,s=n.length,o=t.length,{p:i,s:c}=le(n,t);i===s&&c===0&&s===o||r.replaceData(i,s-i-c,t.slice(i,o-c));const h=r.data,p=e.ownerDocument.getSelection?.()??null,w=p!==null&&p.rangeCount>0&&(p.anchorNode===r||p.focusNode===r)?{anchor:p.anchorNode,anchorOffset:p.anchorOffset,focus:p.focusNode,focusOffset:p.focusOffset}:null;let m=-1,g=-1;for(let f=0;f<h.length&&f<t.length;f++){const v=h.charCodeAt(f),b=t.charCodeAt(f);v!==b&&M(v,b)&&(m<0&&(m=f),g=f)}const a=m>=0;if(a&&r.replaceData(m,g-m+1,t.slice(m,g+1)),a&&w!==null&&w.anchor!==null&&w.focus!==null)try{p.setBaseAndExtent(w.anchor,w.anchorOffset,w.focus,w.focusOffset)}catch{}}var fe=new Set(["html","head","body","frameset"]);function de(e){return e.namespaceURI==="http://www.w3.org/1999/xhtml"&&fe.has(e.localName)}function pe(e){if(e===null||typeof e!="object")return!1;const t=e;if(typeof t.target!="string"||!re.test(t.target)||t.text!==void 0&&typeof t.text!="string")return!1;if(t.attrsSet!==void 0){if(t.attrsSet===null||typeof t.attrsSet!="object")return!1;for(const[r,n]of Object.entries(t.attrsSet))if(!$.test(r)||typeof n!="string")return!1}if(t.attrsRemoved!==void 0){if(!Array.isArray(t.attrsRemoved))return!1;for(const r of t.attrsRemoved)if(typeof r!="string"||!$.test(r))return!1}return!0}function me(e,t){if(e===null||typeof e!="object")return!1;const{seq:r,elements:n}=e;if(typeof r!="number"||!Number.isSafeInteger(r)||!Array.isArray(n)||n.length===0||n.length>64)return!1;for(let s=0;s<n.length;s++)if(!t(n[s]))return!1;return!0}function he(e){return e===null||typeof e!="object"?!1:me(e.__frame_patch,pe)}function _e(e){if(e===null||typeof e!="object")return!1;const t=e.__frame_init;return t!==null&&typeof t=="object"}function ve(e){return e!==null&&typeof e=="object"&&e.__frame_size_poke===!0}function ye(e){if(e===null||typeof e!="object")return!1;const t=e.__frame_theme;if(t===null||typeof t!="object")return!1;const r=t.theme;return typeof r=="string"&&te.includes(r)}var A=/^[\w.-]+\.js$/;function we(e,t,r){return r?"inert":typeof t=="string"&&A.test(t)?e?[t]:"inert":e?"inert":"framed"}function ge(){return{post(e,t){parent.postMessage(e,t)},on(e){const t=r=>{r.source===parent&&e(r.data,r.origin,r.isTrusted)};return addEventListener("message",t),()=>removeEventListener("message",t)}}}function be(){return{post:()=>{},on:()=>()=>{}}}var j="__frame_scroll",Ee=150,Ae=310,Se=160,Te=3e4;function ke(){let e=0,t=!1,r=!1,n=!1,s=0,o=null;const i=l=>{try{sessionStorage.setItem(j,JSON.stringify({y:l}))}catch{}},c=()=>{if(clearTimeout(e),o===null)return;const l=o;o=null,i(l)},h=()=>{if(t){t=!1;return}r=!0,o=scrollY,clearTimeout(e),e=setTimeout(c,Ee)};try{addEventListener("scroll",h,{passive:!0}),addEventListener("pagehide",c)}catch{}const p=()=>{let l;try{l=sessionStorage.getItem(j)}catch{return null}if(l===null)return null;let _;try{_=JSON.parse(l)}catch{_=null}const d=_?.y;if(!(typeof d=="number"&&Number.isFinite(d)&&d>=0)){try{sessionStorage.removeItem(j)}catch{}return null}return d};let w=!1;const m=l=>{try{const _=scrollY;scrollTo({top:l,left:0,behavior:"instant"}),s=l,n=!0,clearTimeout(e),o=null,i(l);const d=scrollY;d!==_&&(t=!0),d!==l&&!w&&(w=!0,addEventListener("load",()=>{try{if(scrollY===d){const T=p();m(T!==null?T:s)}}catch{}},{once:!0}))}catch{}},g=()=>{try{return!!location.hash}catch{return!0}};let a=!1;const f=()=>{try{if(a||innerWidth>Ae||innerHeight>Se)return;a=!0;const l=Date.now(),_=()=>{try{removeEventListener("resize",_)}catch{}if(Date.now()-l>Te||r||g())return;const d=p();m(d!==null?d:s)};addEventListener("resize",_)}catch{}};let v=!1,b=!1;return{restore(){if(v||(v=!0,g()))return;const l=p();l!==null&&(m(l),f())},promoted(){if(b||(b=!0,g()))return;const l=p();l!==null?(m(l),f()):n&&m(s)}}}function Re(e,t,r,n){let s=null;try{s=window.trustedTypes?.createPolicy("frame-runtime",{createScriptURL:h=>h})??null}catch{}const o=window.Worker,i=o?.prototype,c=Object.freeze({Worker:o,workerOn:i?.addEventListener,workerPost:i?.postMessage,workerTerminate:i?.terminate,fetch:window.fetch.bind(window),preventDefault:Event.prototype.preventDefault,policy:s,origins:t});r(e).then(h=>h?.bootTopLevel?h.bootTopLevel(c,n):n.settle()).catch(()=>n.settle())}var De="modulepreload",Ie=function(e){return"/"+e},Ue={},Le=function(t,r,n){let s=Promise.resolve();function o(i){const c=new Event("vite:preloadError",{cancelable:!0});if(c.payload=i,window.dispatchEvent(c),!c.defaultPrevented)throw i}return s.then(i=>{for(const c of i||[])c.status==="rejected"&&o(c.reason);return t().catch(o)})},Oe=window===top,q=Object.getOwnPropertyDescriptor(window,"claude"),k=we(Oe,window.__FRAME_PREAMBLE?.topLevel,q?.writable===!1),N=typeof k=="object"&&k[0],y=N?be():ge();(function(){const e=Object.defineProperty,t=globalThis,r=["RTCPeerConnection","webkitRTCPeerConnection","RTCDataChannel","RTCIceCandidate","RTCSessionDescription","RTCRtpSender","RTCRtpReceiver"];let n=0;for(let s=0;s<r.length;s++){const o=r[s];try{e(t,o,{value:void 0,writable:!1,configurable:!1})}catch{try{delete t[o]}catch{}try{e(t,o,{value:void 0,writable:!1,configurable:!0})}catch{}}typeof t[o]=="function"&&n++}if(n&&k==="framed")try{y.post({__frame_rtc_lockdown_failed:n},"*")}catch{}})();var Pe=1e4,Y=Object.freeze([...window.__FRAME_PREAMBLE?.origins??["https://claude.ai","https://preview.claude.ai"]]);function X(e){for(const t of Y)if(t.endsWith(":*"))try{const r=new URL(e);if(`${r.protocol}//${r.hostname}:*`===t)return!0}catch{}else if(e===t)return!0;return!1}var R=Object.freeze({...window.__FRAME_PREAMBLE?.capabilities}),B=window.__FRAME_PREAMBLE?.transforms,D=window.__FRAME_PREAMBLE?.comments,I=window.__FRAME_PREAMBLE?.translate;function S(e){return Le(()=>import("/_runtime/"+e),void 0)}function G(e,t){return{contract:e.contract,changes:new Set(e.changes??[]),flags:new Set(e.flags??[]),capabilities:e.capabilities??{},capBudgets:e.capBudgets??{},transforms:new Map,shellOrigin:t,mount:x,hooks:O,pipe:()=>({wrap:(r,n)=>(...s)=>{try{return n(...s)}catch(o){return Promise.reject(o)}}})}}var L=null,E=null;function V(e,t,r){try{Object.defineProperty(e,t,{value:r,writable:!1,configurable:!1,enumerable:!0})}catch{try{Object.defineProperty(e,t,{value:r,writable:!1,configurable:!0,enumerable:!0})}catch{}}}var U=!1,O={editBefore:null,edit:null};function Ce(e,t,r=!1){const n=[];let s;if(r)try{O.editBefore?.(e)}catch{}for(const o of e.elements){const i=document.querySelector(`[data-id="${o.target}"]`);if(!i){s=o.target;break}if([...Object.keys(o.attrsSet??{}),...o.attrsRemoved??[]].some(c=>!oe(c))){s=o.target;break}if(o.text!==void 0&&(!ce(i)||de(i))){s=o.target;break}for(const[c,h]of Object.entries(o.attrsSet??{}))if(!J(i,c)){try{i.setAttribute(c,h)}catch{}Z(i,c,h)}for(const c of o.attrsRemoved??[])J(i,c)||(i.removeAttribute(c),Z(i,c,null));typeof o.text=="string"&&ue(i,o.text),n.push(o.target)}if(r)try{O.edit?.(e.seq,n,s)}catch{}if(s!==void 0){y.post({__frame_patch_miss:{seq:e.seq}},t);return}try{document.dispatchEvent(new CustomEvent("claude:edit",{detail:{seq:e.seq,targets:n}}))}catch{}}function Z(e,t,r){if(!(e instanceof HTMLInputElement))return;const n=t.toLowerCase();n==="checked"?e.checked=r!==null:n==="value"&&e.type!=="file"&&(e.value=r??"")}function J(e,t){const r=t.toLowerCase(),n=e;return r==="data-id"||(r==="value"||r==="checked")&&(n.__artifactSecret===!0||/^(password|hidden|file)$/.test(n.type??"")||/(^|\s)(cc-|one-time-code|current-password|new-password)/i.test(`${e.getAttribute("autocomplete")??""} ${n.autocomplete??""}`))}function Q(e){const t=document.documentElement;e==="light"||e==="dark"?(t.dataset.theme=e,t.style.colorScheme=e,U=!0):U&&(delete t.dataset.theme,t.style.colorScheme="",U=!1)}var P=new Map;function Me(){let e;const t={u:new Promise(r=>{e=r}),r:r=>{t.done=!0,e(r)},done:!1,nulled:!1};return t}function F(){for(const e of P.values())e.done||(e.nulled=!0,e.r(null))}var je=Object.freeze(Object.assign(Object.create(null),{call:Function.prototype.call,apply:Function.prototype.apply,bind:Function.prototype.bind})),x=(e,t)=>{const r=P.get(e);if(!r||r.done){r?.nulled&&E&&y.post({__frame_cap_telemetry:{kind:"cap-load-error",cap:e}},E);return}const n=typeof t=="function"?Object.setPrototypeOf(t,je):Object.assign(Object.create(null),t);typeof n.then=="function"&&delete n.then,r.r(Object.freeze(n))};function ee(){const e=q?.value??{};V(window,"claude",e);for(const t of Object.keys(R)){if(e[t]!==void 0){V(e,t,e[t]);continue}P.set(t,Me())}if(e.use===void 0){const t=r=>{if(typeof r!="string"||!Object.hasOwn(R,r))return Promise.resolve(null);const n=P.get(r);return n?n.u:Promise.resolve(e[r]??null)};try{Object.defineProperty(e,"use",{value:t,writable:!0,configurable:!0,enumerable:!1})}catch{}}}if(k==="framed"){const e=B&&A.test(B)?S(B).catch(()=>{}):Promise.resolve(void 0),t=a=>{if(a.type==="auxclick"&&a.button!==1)return;const f=a.target,v=f&&f.closest?f.closest("a[href],area[href]"):null;if(!v)return;const b=v.getAttribute("href");if(!b)return;let l;try{l=new URL(b,document.baseURI)}catch{return}if((l.protocol==="http:"||l.protocol==="https:")&&l.origin!==location.origin){a.preventDefault();const _=(v.getAttribute("target")??"").toLowerCase(),d=a.type==="auxclick"||a.metaKey||a.ctrlKey||a.shiftKey||a.altKey||!["","_self","_top","_parent"].includes(_);y.post({__frame_nav:!0,url:l.href,newTab:d},"*")}};addEventListener("click",t,!0),addEventListener("auxclick",t,!0);const r={},n=a=>{a.isTrusted&&(r.pointer=!0)},s=a=>{a.isTrusted&&(r.click=!0)};addEventListener("pointermove",n,{capture:!0,passive:!0}),addEventListener("click",s,{capture:!0,passive:!0}),e.then(a=>{a?.wireNav&&(a.wireNav(),removeEventListener("click",t,!0),removeEventListener("auxclick",t,!0),removeEventListener("pointermove",n,!0),removeEventListener("click",s,!0),a.wireEngagement?.(r))});let o=null;try{o=ke()}catch{}ee();let i=null,c=null,h=0;const p=y.on((a,f)=>{X(f)&&_e(a)&&(i=a.__frame_init,E=f,p(),clearTimeout(h),c?.())});y.post({__frame_connect:!0},"*");const w=new Promise(a=>{c=a,h=setTimeout(()=>{p(),a()},Pe)}),m=document.readyState==="loading"?new Promise(a=>document.addEventListener("DOMContentLoaded",()=>a(),{once:!0})):Promise.resolve();m.then(()=>{try{o?.restore()}catch{}});const g={cb:null};y.on((a,f)=>{if(X(f)&&ve(a)){try{o?.promoted()}catch{}g.cb?.()}}),w.then(async()=>{if(!i||!E){F();return}Q(i.theme);const a=E;let f=!1,v=!1;y.on((u,z,C)=>{if(z!==a)return;ye(u)&&Q(u.__frame_theme.theme),he(u)&&Ce(u.__frame_patch,a,C);const H=u?.__fc_mode;H&&typeof H=="object"&&!f&&D&&A.test(D)&&(f=!0,S(D).then(K=>K.install?.(a,H.on===!0)).catch(()=>{}));const W=u?.__ft_cmd;W&&typeof W=="object"&&!v&&I&&A.test(I)&&(v=!0,S(I).then(K=>K.install?.(a,W)).catch(()=>{}))});const b=Object.keys(i.capabilities??{}).filter(u=>Object.hasOwn(R,u)).map(u=>[u,R[u]]).filter(u=>typeof u[1]=="string"&&A.test(u[1])),l=await Promise.allSettled(b.map(([,u])=>S(u))),_=await e,d=E;if(_?.buildBoot||y.post({__frame_cap_telemetry:{kind:"cap-load-error",cap:"_transforms"}},d),_?.buildBoot)try{L=_.buildBoot(i,_.TRANSFORMS??{},{shellOrigin:d,mount:x,hooks:O},u=>y.post({__frame_cap_telemetry:u},d))}catch{y.post({__frame_cap_telemetry:{kind:"cap-load-error",cap:"_transforms"}},d),L=G(i,d)}else L=G(i,d);const T=u=>y.post({__frame_cap_telemetry:{kind:"cap-load-error",cap:u}},d),Ne=L;l.forEach((u,z)=>{const C=b[z][0];if(u.status!=="fulfilled"){T(C);return}try{u.value?.install?.(Ne)}catch{T(C)}}),F(),await m,y.post({__frame_ready:!0},E),e.then(u=>u?.installSizeReporter?.(d,g))})}else N&&(ee(),Re(N,Y,S,{settle:F,mount:x}))})();</script><!-- /frame-runtime --><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1"><style>:root{color-scheme:light}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}</style></head><body>
+<title>Écosystème du jeu vidéo — Support de cours</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zilla+Slab:wght@400;500;600;700&family=Karla:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap">
+<style>
+  :root{
+    --bg:#E8E4D9;
+    --surface:#F4F1E8;
+    --surface-alt:#FFFFFF;
+    --ink:#24211B;
+    --ink-soft:#5F5847;
+    --ink-faint:#8B8371;
+    --line:#D6CFBC;
+    --accent:#BE7A1F;
+    --accent-strong:#8F5A14;
+    --accent-2:#A23A33;
+    --accent-2-strong:#7C2B26;
+    --dot: rgba(36,33,27,0.07);
+    --shadow: rgba(36,33,27,0.10);
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#1C1B17;
+      --surface:#242219;
+      --surface-alt:#2C2A20;
+      --ink:#ECE6D6;
+      --ink-soft:#B7AF9A;
+      --ink-faint:#857D69;
+      --line:#3C392E;
+      --accent:#E2A44C;
+      --accent-strong:#F0C583;
+      --accent-2:#DD7A72;
+      --accent-2-strong:#EDA098;
+      --dot: rgba(236,230,214,0.055);
+      --shadow: rgba(0,0,0,0.35);
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#1C1B17;
+    --surface:#242219;
+    --surface-alt:#2C2A20;
+    --ink:#ECE6D6;
+    --ink-soft:#B7AF9A;
+    --ink-faint:#857D69;
+    --line:#3C392E;
+    --accent:#E2A44C;
+    --accent-strong:#F0C583;
+    --accent-2:#DD7A72;
+    --accent-2-strong:#EDA098;
+    --dot: rgba(236,230,214,0.055);
+    --shadow: rgba(0,0,0,0.35);
+  }
+
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  @media (prefers-reduced-motion: reduce){ html{scroll-behavior:auto;} }
+
+  body{
+    margin:0;
+    background:var(--bg);
+    background-image: radial-gradient(var(--dot) 1px, transparent 1px);
+    background-size: 22px 22px;
+    color:var(--ink);
+    font-family:'Karla', system-ui, sans-serif;
+    line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  h1,h2,h3{
+    font-family:'Zilla Slab', Georgia, serif;
+    text-wrap:balance;
+    margin:0;
+    color:var(--ink);
+  }
+
+  .mono{ font-family:'IBM Plex Mono', ui-monospace, monospace; }
+
+  a{ color:var(--accent-strong); }
+  a:focus-visible, button:focus-visible, .toc a:focus-visible{
+    outline:2px solid var(--accent);
+    outline-offset:3px;
+  }
+
+  .page{ max-width:1180px; margin:0 auto; padding:0 24px 96px; }
+
+  /* ---------- HERO ---------- */
+  .hero{
+    padding:56px 0 36px;
+    border-bottom:1px solid var(--line);
+    margin-bottom:8px;
+  }
+  .eyebrow{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:0.72rem;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    color:var(--accent-strong);
+    margin:0 0 14px;
+  }
+  .hero h1{
+    font-size:clamp(2.1rem, 4.2vw, 3.1rem);
+    font-weight:700;
+    letter-spacing:-0.01em;
+  }
+  .hero p.lede{
+    max-width:64ch;
+    margin:14px 0 0;
+    color:var(--ink-soft);
+    font-size:1.05rem;
+  }
+
+  .stat-strip{
+    display:flex;
+    flex-wrap:wrap;
+    gap:0;
+    margin-top:32px;
+    border:1px solid var(--line);
+    background:var(--surface);
+    border-radius:4px;
+    overflow:hidden;
+  }
+  .stat{
+    flex:1 1 160px;
+    padding:16px 20px;
+    border-right:1px solid var(--line);
+  }
+  .stat:last-child{ border-right:none; }
+  .stat .label{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:0.68rem;
+    letter-spacing:0.1em;
+    text-transform:uppercase;
+    color:var(--ink-faint);
+    display:block;
+    margin-bottom:6px;
+  }
+  .stat .value{
+    font-family:'Zilla Slab', serif;
+    font-weight:600;
+    font-size:1.15rem;
+  }
+
+  /* ---------- LAYOUT ---------- */
+  .layout{
+    display:grid;
+    grid-template-columns: 232px 1fr;
+    gap:48px;
+    align-items:start;
+    padding-top:36px;
+  }
+  @media (max-width: 880px){ .layout{ grid-template-columns: 1fr; } }
+
+  .toc{
+    position:sticky;
+    top:24px;
+    display:flex;
+    flex-direction:column;
+    gap:2px;
+  }
+  @media (max-width: 880px){ .toc{ position:static; } }
+  .toc-title{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:0.68rem;
+    letter-spacing:0.1em;
+    text-transform:uppercase;
+    color:var(--ink-faint);
+    margin-bottom:10px;
+  }
+  .toc a{
+    text-decoration:none;
+    color:var(--ink-soft);
+    font-size:0.92rem;
+    padding:7px 10px;
+    border-radius:4px;
+    border-left:2px solid transparent;
+  }
+  .toc a:hover{ color:var(--ink); background:var(--surface); }
+
+  main{ min-width:0; }
+  section{ margin-bottom:56px; scroll-margin-top:24px; }
+  section h2{
+    font-size:clamp(1.4rem, 2.4vw, 1.85rem);
+    margin-bottom:6px;
+  }
+  .section-sub{
+    color:var(--ink-soft);
+    max-width:70ch;
+    margin:0 0 24px;
+  }
+
+  /* ---------- SEQUENCE BLOCK ---------- */
+  .seq{
+    border:1px solid var(--line);
+    background:var(--surface);
+    border-radius:8px;
+    overflow:hidden;
+    margin-bottom:22px;
+  }
+  .seq-head{
+    display:flex;
+    align-items:flex-start;
+    gap:16px;
+    padding:20px 24px;
+    border-bottom:1px solid var(--line);
+    background:var(--surface-alt);
+  }
+  .seq-badge{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:0.72rem;
+    letter-spacing:0.06em;
+    color:var(--accent-strong);
+    border:1px solid var(--accent);
+    border-radius:4px;
+    padding:5px 9px;
+    white-space:nowrap;
+    margin-top:3px;
+  }
+  .seq-head h3{ font-size:1.18rem; font-weight:600; font-family:'Karla',sans-serif; }
+  .seq-tag{
+    display:block;
+    margin-top:4px;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:0.72rem;
+    letter-spacing:0.06em;
+    color:var(--ink-faint);
+  }
+  .seq-body{ padding:22px 24px; }
+
+  /* ---------- HALVES / COMPARE ---------- */
+  .halves{ display:grid; grid-template-columns:1fr 1fr; gap:22px; margin-bottom:16px; }
+  @media (max-width: 720px){ .halves{ grid-template-columns:1fr; } }
+  .half-label{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:0.68rem;
+    letter-spacing:0.1em;
+    text-transform:uppercase;
+    color:var(--ink-faint);
+    margin-bottom:10px;
+  }
+  .half ul{ margin:0; padding-left:1.15em; }
+  .half li{ margin-bottom:6px; }
+  .half p{ margin:0 0 10px; }
+
+  .compare{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    border:1px solid var(--line);
+    border-radius:6px;
+    overflow:hidden;
+    margin-bottom:16px;
+  }
+  @media (max-width: 720px){ .compare{ grid-template-columns:1fr; } }
+  .compare-col{ padding:16px 18px; background:var(--surface-alt); }
+  .compare-col:first-child{ border-right:1px solid var(--line); }
+  @media (max-width: 720px){ .compare-col:first-child{ border-right:none; border-bottom:1px solid var(--line); } }
+  .compare-col h4{
+    margin:0 0 10px;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:0.74rem;
+    letter-spacing:0.08em;
+    text-transform:uppercase;
+    color:var(--accent-strong);
+    font-weight:500;
+  }
+  .compare-row{ margin-bottom:10px; }
+  .compare-row:last-child{ margin-bottom:0; }
+  .compare-row .k{
+    display:block;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:0.66rem;
+    letter-spacing:0.06em;
+    text-transform:uppercase;
+    color:var(--ink-faint);
+    margin-bottom:2px;
+  }
+  .compare-row .v{ font-size:0.94rem; color:var(--ink-soft); line-height:1.5; }
+
+  .question-line{
+    padding-top:12px;
+    border-top:1px dashed var(--line);
+    font-size:1.02rem;
+  }
+  .question-line b{ color:var(--accent-strong); }
+
+  /* ---------- CARDS ---------- */
+  .col-grid{ display:grid; gap:14px; }
+  .col-grid--3{ grid-template-columns:repeat(3,1fr); }
+  @media (max-width: 720px){ .col-grid--3{ grid-template-columns:1fr; } }
+  .stack-cards{ display:flex; flex-direction:column; gap:14px; }
+  .mini-card{
+    border:1px solid var(--line);
+    background:var(--surface-alt);
+    border-radius:6px;
+    padding:14px 16px;
+  }
+  .mini-card h4{ margin:0 0 8px; font-size:0.98rem; font-weight:600; font-family:'Karla',sans-serif; }
+  .mini-card p{ margin:0; color:var(--ink-soft); font-size:0.9rem; }
+  .mini-card ul{ margin:0; padding-left:1.15em; color:var(--ink-soft); font-size:0.9rem; }
+  .mini-card ul li{ margin-bottom:6px; }
+  .mini-card ul li:last-child{ margin-bottom:0; }
+
+  /* ---------- PIPELINE / TAGS ---------- */
+  .pipeline{ display:flex; flex-wrap:wrap; align-items:center; gap:8px; margin-bottom:8px; }
+  .pipeline:last-child{ margin-bottom:0; }
+  .pipeline-label{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:0.68rem;
+    letter-spacing:0.1em;
+    text-transform:uppercase;
+    color:var(--ink-faint);
+    width:100%;
+    margin-bottom:2px;
+  }
+  .chip{
+    display:inline-block;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:0.72rem;
+    letter-spacing:0.03em;
+    padding:5px 10px;
+    border-radius:10px;
+    border:1px solid var(--line);
+    color:var(--ink-soft);
+    background:var(--surface-alt);
+    white-space:nowrap;
+  }
+  .chip.accent{ border-color:var(--accent); color:var(--accent-strong); background:rgba(190,122,31,0.08); }
+  .sep{ color:var(--accent); font-weight:600; }
+
+  /* ---------- CALLOUT / QUOTE ---------- */
+  .callout{
+    border-left:3px solid var(--accent);
+    background:var(--surface-alt);
+    border-radius:0 4px 4px 0;
+    padding:14px 16px;
+    margin:16px 0 0;
+  }
+  .callout .callout-tag{
+    display:inline-block;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:0.66rem;
+    letter-spacing:0.1em;
+    text-transform:uppercase;
+    color:var(--accent-strong);
+    margin-bottom:8px;
+  }
+  .callout.alt{ border-left-color:var(--accent-2); }
+  .callout.alt .callout-tag{ color:var(--accent-2-strong); }
+  .callout p{ margin:0; }
+
+  .quote-block{
+    background:var(--surface-alt);
+    border:1px solid var(--line);
+    border-radius:8px;
+    padding:26px 28px;
+    margin:16px 0 0;
+  }
+  .quote-stmt{
+    font-family:'Zilla Slab', serif;
+    font-size:clamp(1.15rem, 2vw, 1.5rem);
+    line-height:1.3;
+    margin:0 0 10px;
+    max-width:44ch;
+  }
+  .quote-ask{ margin:0; color:var(--ink-soft); max-width:52ch; }
+  .quote-ask b{ color:var(--accent-strong); }
+
+  /* ---------- NUMBERED / QA / CLOSING LISTS ---------- */
+  .numbered{ list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:12px; }
+  .numbered li{ display:flex; gap:14px; align-items:flex-start; }
+  .numbered .n{ font-family:'IBM Plex Mono', monospace; color:var(--accent-strong); font-size:0.88rem; padding-top:2px; flex:none; }
+  .numbered p{ margin:0; }
+
+  .qa-list{ display:flex; flex-direction:column; }
+  .qa-row{ display:flex; gap:16px; align-items:baseline; padding:12px 0; border-bottom:1px solid var(--line); }
+  .qa-row:first-child{ border-top:1px solid var(--line); }
+  .qa-row .qn{ font-family:'IBM Plex Mono', monospace; color:var(--accent-strong); font-size:0.85rem; flex:none; }
+  .qa-row p{ margin:0; }
+
+  .closing-list{ list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:9px; }
+  .closing-list li{ display:flex; gap:10px; color:var(--ink-soft); }
+  .closing-list li::before{ content:'—'; color:var(--accent-strong); flex:none; }
+
+  .pb-before{ break-before:page; page-break-before:always; }
+
+  /* ---------- TABLES ---------- */
+  .table-wrap{ overflow-x:auto; border:1px solid var(--line); border-radius:6px; }
+  table{ border-collapse:collapse; width:100%; min-width:520px; font-size:0.94rem; }
+  thead th{
+    text-align:left;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:0.7rem;
+    letter-spacing:0.08em;
+    text-transform:uppercase;
+    color:var(--ink-faint);
+    background:var(--surface-alt);
+    padding:10px 14px;
+    border-bottom:1px solid var(--line);
+    white-space:nowrap;
+  }
+  tbody td{
+    padding:10px 14px;
+    border-bottom:1px solid var(--line);
+    vertical-align:top;
+  }
+  tbody tr:last-child td{ border-bottom:none; }
+  tbody tr:nth-child(even){ background:var(--surface); }
+  td.num, th.num{ font-family:'IBM Plex Mono', monospace; font-variant-numeric:tabular-nums; white-space:nowrap; }
+
+  .footnote{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:0.78rem;
+    color:var(--ink-faint);
+    letter-spacing:0.02em;
+    margin-top:16px;
+    padding-top:14px;
+    border-top:1px solid var(--line);
+  }
+
+  footer{
+    margin-top:24px;
+    padding-top:24px;
+    border-top:1px solid var(--line);
+    color:var(--ink-faint);
+    font-size:0.82rem;
+  }
+
+  @media print{
+    :root{ color-scheme:light; }
+    body{ background-image:none; }
+    .page{ max-width:none; padding:0 8px 24px; }
+    .hero{ padding-top:12px; }
+    .layout{ display:block; padding-top:20px; }
+    .toc{ display:none; }
+    a{ color:var(--ink); text-decoration:none; }
+    section{ break-inside:avoid-page; margin-bottom:36px; }
+    .seq{ break-inside:avoid-page; }
+    .table-wrap{ overflow-x:visible; }
+  }
+</style>
+
+<div class="page">
+
+  <header class="hero">
+    <p class="eyebrow">EARTSUP · Support de cours</p>
+    <h1>Écosystème du jeu vidéo — 2026</h1>
+    <p class="lede">Comprendre le marché dans son ensemble pour situer sa propre place dedans — supports, acteurs, modèles économiques, débouchés.</p>
+    <div class="stat-strip">
+      <div class="stat"><span class="label">Durée</span><span class="value">3h00</span></div>
+      <div class="stat"><span class="label">Public</span><span class="value">5 étudiants</span></div>
+      <div class="stat"><span class="label">Profils</span><span class="value">4 Animation · 1 Game Design</span></div>
+      <div class="stat"><span class="label">Structure</span><span class="value">3 séquences + atelier</span></div>
+    </div>
+  </header>
+
+  <div class="layout">
+    <nav class="toc" id="toc">
+      <span class="toc-title">Sommaire</span>
+      <a href="#route">Feuille de route</a>
+      <a href="#ouverture">Ouverture</a>
+      <a href="#marche">Séq. 1 — Le marché</a>
+      <a href="#metier">Séq. 2 — Le métier</a>
+      <a href="#atelier">Séq. 3 — Atelier</a>
+      <a href="#cloture">Clôture</a>
+    </nav>
+
+    <main>
+
+      <section id="route">
+        <h2>Feuille de route</h2>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Horaire</th><th>Étape</th><th>Détail</th><th class="num">Durée</th></tr></thead>
+            <tbody>
+              <tr><td class="num mono">00:00 → 00:10</td><td>Accueil</td><td>Tour de table</td><td class="num">10 min</td></tr>
+              <tr><td class="num mono">00:10 → 01:10</td><td>Séquence 1</td><td>Cartographie du marché 2026</td><td class="num">60 min</td></tr>
+              <tr><td class="num mono">01:10 → 02:10</td><td>Séquence 2</td><td>Le métier, sa réalité, ses tensions</td><td class="num">60 min</td></tr>
+              <tr><td class="num mono">02:10 → 02:55</td><td>Séquence 3</td><td>Votre vision</td><td class="num">45 min</td></tr>
+              <tr><td class="num mono">02:55 → 03:00</td><td>Clôture</td><td>—</td><td class="num">5 min</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section id="ouverture">
+        <h2>Ouverture</h2>
+        <p class="section-sub">00:00 → 00:10 — avant de commencer.</p>
+        <div class="col-grid col-grid--3">
+          <div class="mini-card"><h4>Qui es-tu ?</h4><p>Anim ou game design, ton parcours jusqu'ici.</p></div>
+          <div class="mini-card"><h4>Pourquoi ce métier ?</h4><p>Ce qui t'a donné envie, le déclic.</p></div>
+          <div class="mini-card"><h4>Un jeu qui t'a marqué</h4><p>Récemment — et pourquoi celui-là.</p></div>
+        </div>
+      </section>
+
+      <section id="marche">
+        <h2>Séquence 1 — Cartographie du marché 2026</h2>
+        <p class="section-sub">00:10 → 01:10 · 60 min — situer un projet dans la structure économique du secteur : supports, plateformes, acteurs, modèles.</p>
+
+        <div class="callout" style="margin-top:0; margin-bottom:22px;">
+          <p>Discussion libre&nbsp;: sur quoi jouez-vous vraiment&nbsp;? Et est-ce que ça vous choque qu'un jeu «&nbsp;gratuit&nbsp;» vous coûte parfois plus cher qu'un jeu à 60&nbsp;€&nbsp;?</p>
+        </div>
+
+        <div class="seq">
+          <div class="seq-head"><div><h3>PC / console / mobile</h3><span class="seq-tag">Supports</span></div></div>
+          <div class="seq-body">
+            <div class="stack-cards">
+              <div class="mini-card">
+                <h4>PC</h4>
+                <ul>
+                  <li>Le laboratoire créatif du secteur : la scène indépendante, les moddeurs et les créateurs techniques y trouvent la plus grande liberté.</li>
+                  <li>Marché mature et public exigeant, habitué aux bibliothèques numériques (Steam, Epic Games Store, GOG) et aux mises à jour continues.</li>
+                  <li>Terrain privilégié pour l'early access, les mods et les jeux de niche qui ne trouveraient pas leur public ailleurs.</li>
+                  <li>Contrainte technique variable : le jeu doit tourner sur un parc de configurations très hétérogène.</li>
+                </ul>
+              </div>
+              <div class="mini-card">
+                <h4>Console</h4>
+                <ul>
+                  <li>Écosystèmes fermés et verrouillés par les constructeurs (PlayStation, Xbox, Switch), qui gardent un contrôle total sur ce qui est publié.</li>
+                  <li>Production plus lourde : équipes plus grandes, cycles de développement plus longs, budgets marketing conséquents.</li>
+                  <li>Exigences de certification élevées avant toute sortie — un processus de validation strict imposé par le constructeur.</li>
+                  <li>Matériel homogène par génération : moins de contraintes d'optimisation que sur PC, mais un public qui attend une expérience irréprochable dès le lancement.</li>
+                </ul>
+              </div>
+              <div class="mini-card">
+                <h4>Mobile</h4>
+                <ul>
+                  <li>Le plus gros volume de joueurs au monde, toutes générations et tous profils confondus.</li>
+                  <li>Cycles de développement courts, itérations rapides, économie dominée par le free-to-play.</li>
+                  <li>Modèle économique fondé sur la rétention et la monétisation continue (achats intégrés, publicité) plutôt que sur le prix de vente initial.</li>
+                  <li>Marché très concurrentiel où l'acquisition d'utilisateurs peut coûter plus cher que le développement du jeu lui-même.</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="seq">
+          <div class="seq-head"><div><h3>Plateformes de distribution : pas que de la distribution</h3></div></div>
+          <div class="seq-body">
+            <div class="stack-cards">
+              <div class="mini-card">
+                <h4>Epic Games Store</h4>
+                <ul>
+                  <li>Plateforme de distribution numérique, alternative à Steam, lancée par Epic Games.</li>
+                  <li>Couplée à un moteur (Unreal Engine) et à Fortnite, qui fonctionne comme un espace social et un canal de diffusion pour d'autres contenus.</li>
+                  <li>Un éditeur qui est aussi son propre écosystème technique&nbsp;: il développe l'outil, distribue le jeu et anime la communauté.</li>
+                </ul>
+              </div>
+              <div class="mini-card">
+                <h4>Roblox</h4>
+                <ul>
+                  <li>Un moteur de création grand public plus qu'une plateforme de jeux au sens classique.</li>
+                  <li>Les joueurs sont aussi les créateurs (UGC — contenu généré par les utilisateurs)&nbsp;: la frontière entre joueur et développeur y est la plus fine du marché.</li>
+                  <li>Un vrai terrain professionnel aujourd'hui, avec une économie interne (Robux) et des créateurs qui en vivent.</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="seq">
+          <div class="seq-head"><div><h3>Acteurs &amp; modèles : Qui fait quoi, qui paie quoi</h3></div></div>
+          <div class="seq-body">
+            <div class="half-label">Les acteurs</div>
+            <div class="stack-cards" style="margin-bottom:20px;">
+              <div class="mini-card"><h4>Constructeurs</h4><p>Fabriquent le matériel et définissent les règles d'accès à leur écosystème — Sony, Microsoft, Nintendo, Apple, Google.</p></div>
+              <div class="mini-card"><h4>Éditeurs</h4><p>Financent, produisent et commercialisent les jeux&nbsp;; ils portent le risque financier et détiennent souvent les droits de la licence.</p></div>
+              <div class="mini-card"><h4>Studios de développement</h4><p>Conçoivent et fabriquent le jeu — internes à un éditeur, indépendants, ou sous contrat pour un tiers.</p></div>
+              <div class="mini-card"><h4>Plateformes de distribution</h4><p>Mettent le jeu à disposition du joueur (Steam, Epic Games Store, PlayStation Store, App Store…) et prélèvent une commission sur chaque vente.</p></div>
+              <div class="mini-card"><h4>Investisseurs</h4><p>Apportent les fonds nécessaires au développement, en échange d'une part du succès — ou du risque d'échec.</p></div>
+            </div>
+            <div class="half-label pb-before">Comment l'argent circule</div>
+            <div class="stack-cards">
+              <div class="mini-card"><h4>Achat plein tarif</h4><p>Le joueur paie une fois pour posséder le jeu&nbsp;; modèle historique, encore dominant sur AAA console et PC.</p></div>
+              <div class="mini-card"><h4>Free-to-play + monétisation</h4><p>Le jeu est gratuit à l'entrée, les revenus viennent des achats intégrés — cosmétiques, avantages, monnaie virtuelle.</p></div>
+              <div class="mini-card"><h4>DLC &amp; extensions</h4><p>Contenu additionnel payant après la sortie du jeu de base, pour prolonger sa durée de vie commerciale.</p></div>
+              <div class="mini-card"><h4>Battle pass</h4><p>Abonnement saisonnier donnant accès à des récompenses progressives&nbsp;; fidélise le joueur sur plusieurs semaines.</p></div>
+              <div class="mini-card"><h4>Abonnement</h4><p>Accès à un catalogue de jeux moyennant un paiement récurrent (Xbox Game Pass, PlayStation Plus…), plutôt qu'à un titre unique.</p></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="metier">
+        <h2>Séquence 2 — Le métier, sa réalité, ses tensions</h2>
+        <p class="section-sub">01:10 → 02:10 · 60 min — studios, candidatures, argent : un univers qui déborde déjà du seul jeu vidéo.</p>
+
+        <div class="seq">
+          <div class="seq-head"><div><h3>Structures : Gros studio ou indépendant ?</h3></div></div>
+          <div class="seq-body">
+            <div class="compare">
+              <div class="compare-col">
+                <h4>Grand studio</h4>
+                <div class="compare-row"><span class="k">Équipe</span><span class="v">Des dizaines à centaines de personnes, rôles très spécialisés.</span></div>
+                <div class="compare-row"><span class="k">Sécurité</span><span class="v">Plus stable, process établis, mais moins de poids individuel.</span></div>
+                <div class="compare-row"><span class="k">Liberté créative</span><span class="v">Encadrée par la marque, le franchise, le comité.</span></div>
+              </div>
+              <div class="compare-col">
+                <h4>Indépendant</h4>
+                <div class="compare-row"><span class="k">Équipe</span><span class="v">Quelques personnes, rôles polyvalents par nécessité.</span></div>
+                <div class="compare-row"><span class="k">Sécurité</span><span class="v">Précaire, dépendante du succès du prochain titre.</span></div>
+                <div class="compare-row"><span class="k">Liberté créative</span><span class="v">Maximale — mais chaque choix a un coût direct.</span></div>
+              </div>
+            </div>
+            <p class="question-line">Où apprend-on le plus vite <b>en début de carrière</b>&nbsp;?</p>
+          </div>
+        </div>
+
+        <div class="seq">
+          <div class="seq-head"><div><h3>Les évolutions des publics et des usages</h3></div></div>
+          <div class="seq-body">
+            <div class="half-label">Comment jouent les joueurs aujourd'hui&nbsp;?</div>
+            <div class="pipeline" style="margin-bottom:20px;">
+              <span class="chip">Consommation multi-écran</span>
+              <span class="chip">Créateurs de contenus</span>
+              <span class="chip">Streaming</span>
+              <span class="chip">Communautés</span>
+            </div>
+            <div class="half-label">Les nouveaux comportements</div>
+            <div class="pipeline" style="margin-bottom:20px;">
+              <span class="chip">Social gaming</span>
+              <span class="chip">Jeux narratifs</span>
+              <span class="chip">Jeux coopératifs</span>
+              <span class="chip">Expériences hybrides</span>
+            </div>
+            <div class="half-label">Les tendances émergentes</div>
+            <div class="pipeline" style="margin-bottom:20px;">
+              <span class="chip accent">IA générative</span>
+              <span class="chip accent">UGC</span>
+              <span class="chip accent">Roblox</span>
+              <span class="chip accent">Fortnite Creative</span>
+              <span class="chip accent">Expériences transmédia</span>
+            </div>
+            <div class="half-label">Discussion</div>
+            <p class="question-line" style="border-top:none; padding-top:0;">Quels impacts pour vos futurs projets&nbsp;?</p>
+          </div>
+        </div>
+
+        <div class="seq pb-before">
+          <div class="seq-head"><div><h3>Débat : Répondre à une offre de studio</h3></div></div>
+          <div class="seq-body">
+            <ul class="numbered">
+              <li><span class="n">01</span><p>Décoder une fiche de poste — ce qui est vraiment demandé derrière le jargon.</p></li>
+              <li><span class="n">02</span><p>Ce qu'un recruteur regarde en premier dans un portfolio ou un showreel d'animateur.</p></li>
+              <li><span class="n">03</span><p>Candidature spontanée vs réponse à un poste précis&nbsp;: deux exercices différents.</p></li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="seq">
+          <div class="seq-head"><div><h3>Débat : La vision VS la réalité</h3></div></div>
+          <div class="seq-body">
+            <div class="quote-block">
+              <p class="quote-stmt">Le jeu qui vous a marqué a sûrement dû faire des compromis commerciaux.</p>
+              <p class="quote-ask">Où placeriez-vous <b>le curseur</b>, vous, entre ce que vous voulez faire et ce qui doit se vendre&nbsp;?</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="seq">
+          <div class="seq-head"><div><h3>Débat : Transmédia, un univers, plusieurs écrans</h3></div></div>
+          <div class="seq-body">
+            <p style="max-width:60ch; color:var(--ink-soft); margin:0 0 14px;">Un même univers qui se déploie à travers plusieurs médias — jeu, animation, film — chacun racontant une partie différente de l'histoire.</p>
+            <div class="pipeline">
+              <span class="chip">Arcane · League of Legends</span>
+              <span class="chip">Fortnite</span>
+              <span class="chip">Cyberpunk: Edgerunners</span>
+            </div>
+            <div class="callout">
+              <p>C'est là que vos deux mondes se rencontrent&nbsp;: ce module s'appelle Transmédia, et vous êtes quatre animateurs dans cette salle.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="atelier" class="pb-before">
+        <h2>Séquence 3 — Votre vision</h2>
+        <p class="section-sub">02:10 → 02:55 · 45 min — chacun répond à l'oral, dans l'ordre.</p>
+        <div class="qa-list">
+          <div class="qa-row"><span class="qn">01</span><p>Dans quel type de structure tu te vois&nbsp;?</p></div>
+          <div class="qa-row"><span class="qn">02</span><p>Quel avantage tu penses apporter sur ce marché&nbsp;?</p></div>
+          <div class="qa-row"><span class="qn">03</span><p>Ta plus grande question — ou ta plus grande crainte — sur le secteur&nbsp;?</p></div>
+        </div>
+      </section>
+
+      <section id="cloture" class="pb-before">
+        <h2>Clôture</h2>
+        <p class="section-sub">02:55 → 03:00 — la suite.</p>
+        <ul class="closing-list">
+          <li>Le jeu vidéo ne se limite plus à un écran&nbsp;: supports, plateformes, distribution et transmédia forment aujourd'hui un même écosystème.</li>
+          <li>Rentabilité et création ne s'opposent pas toujours — mais il faut savoir où est le curseur.</li>
+          <li>Le transmédia est déjà votre terrain, pas une notion abstraite pour plus tard.</li>
+        </ul>
+      </section>
+
+      <footer>EARTSUP · Écosystème du jeu vidéo — support de cours</footer>
+
+    </main>
+  </div>
+</div>
+
+</body></html>
