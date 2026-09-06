@@ -7,7 +7,7 @@ Index des apprentissages sur la conception des supports de cours EARTSUP. Chaque
 - [Titres fusionnés "Catégorie : Titre"](feedback_titres-fusionnes.md) — sur demande, remplace titre + étiquette séparée
 - [Contenu enrichi en listes à puces](feedback_contenu-detaille.md) — préférer plusieurs points détaillés à une phrase compacte
 - [Pauses invisibles, durée totale préservée](feedback_horaires-pauses.md) — redistribuer les minutes plutôt que les afficher
-- [Sauts de page et export PDF](feedback_export-pdf.md) — méthode validée pour une version partageable
+- [Sauts de page et export PDF](feedback_export-pdf.md) — méthode validée pour une version partageable ; inclut la technique pour fusionner deux pages à l'impression et le piège de la copie locale contaminée par le rendu de l'artifact
 - [Supports de référence EARTSUP](reference_supports-existants.md) — les 4 documents modèles et leurs copies locales
 - [Accueil épuré](feedback_accueil-epure.md) — la page Accueil d'un wiki ne garde que le déroulé du cours, pas le contexte pédagogique ni les instructions d'usage ni les marqueurs de modulabilité
 - [Facettes des exemples de jeux](feedback_facettes-exemples-jeux.md) — toujours garder studio/éditeur et plateforme, en plus de genre + taille/budget + "type de vue"
