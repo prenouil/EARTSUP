@@ -405,7 +405,7 @@
       <div class="stat"><span class="label">Rôle</span><span class="value">Economic Designer (système)</span></div>
       <div class="stat"><span class="label">À ne pas confondre avec</span><span class="value">Economic Designer (monétisation)</span></div>
       <div class="stat"><span class="label">Famille</span><span class="value">System / Simulation Design</span></div>
-      <div class="stat"><span class="label">Études de cas</span><span class="value">5 jeux</span></div>
+      <div class="stat"><span class="label">Études de cas</span><span class="value">6 jeux</span></div>
     </div>
   </header>
 
@@ -494,6 +494,11 @@
             </ul>
           </div>
         </div>
+
+        <div class="callout">
+          <span class="callout-tag">Feeling VS tableurs</span>
+          <p>Un système économique ne se conçoit pas qu'au tableur. Le ressenti immédiat — est-ce que gagner cette ressource procure une sensation satisfaisante à l'instant T ? — se juge à l'instinct et au playtest, pas à la formule. Les tableurs et les outils de simulation de flux prennent le relais pour garantir que cette sensation reste vraie sur des dizaines d'heures et à grande échelle, sans dérive silencieuse. Les deux approches sont complémentaires : le feeling façonne le moment, les données maintiennent la durée.</p>
+        </div>
       </section>
 
       <section id="outils">
@@ -548,12 +553,24 @@
 
         <div class="stack-cards">
           <div class="mini-card">
+            <h4>Qu'est-ce qu'« équilibrer », vraiment ?</h4>
+            <p>Équilibrer ne veut pas dire rendre des ressources égales entre elles : c'est comprendre précisément le rapport réel entre ce qui entre et ce qui sort d'un système — des entrées et sorties mesurées, pas une intuition de symétrie. Ce problème se pose très différemment selon l'échelle à laquelle le joueur agit : piloter un agrégat de décisions abstraites n'a rien à voir avec gérer directement chaque flux un par un.</p>
+          </div>
+          <div class="mini-card">
             <h4>Faucets &amp; sinks</h4>
             <p>Un <strong>faucet</strong> (robinet) est toute source qui injecte une ressource dans l'économie — récompense de quête, butin, revenu passif. Un <strong>sink</strong> (puits) est tout ce qui la retire définitivement — frais, réparation, destruction, taxe. Une économie stable a besoin des deux, à peu près en équilibre dans la durée.</p>
           </div>
           <div class="mini-card">
             <h4>Boucles économiques</h4>
             <p>Le cycle répété par lequel un joueur transforme du temps ou une ressource en une autre ressource, encore et encore (farmer → crafter → vendre → réinvestir). C'est la version économique de la boucle de gameplay : si elle est mal calibrée, elle ennuie ou elle explose.</p>
+          </div>
+          <div class="mini-card">
+            <h4>Courbes logarithmiques et empilement de bonus</h4>
+            <p>Une progression peut s'emballer sans qu'aucune étape individuelle ne semble abusive — chaque bonus pris isolément paraît raisonnable, mais leur empilement successif peut produire une envolée totalement hors de contrôle. Les courbes logarithmiques (où chaque palier suivant coûte proportionnellement plus cher, ou rapporte proportionnellement moins) sont un outil courant pour brider cet emballement sans supprimer la sensation de progression. Vigilance particulière sur l'empilement de bonus successifs (des pourcentages qui s'additionnent plutôt que se multiplient, ou l'inverse selon l'effet recherché) : un designer doit toujours vérifier l'effet cumulé réel sur le joueur qui les accumule tous, pas seulement l'effet de chaque bonus pris isolément.</p>
+          </div>
+          <div class="mini-card">
+            <h4>Que signifie « casser » une économie ?</h4>
+            <p>« Casser » une économie ne veut pas dire qu'elle devient injouable au sens strict, mais qu'une boucle finit par en supplanter totalement les autres — le joueur n'a plus aucune raison rationnelle d'utiliser le reste du système. Le symptôme le plus net : il devient possible d'obtenir un produit final sans passer par les étapes intermédiaires prévues, un raccourci qui court-circuite toute la chaîne de production ou de progression. À ce moment-là, toutes les autres boucles économiques du jeu deviennent décoratives.</p>
           </div>
           <div class="mini-card">
             <h4>Inflation / déflation d'une monnaie in-game</h4>
@@ -563,9 +580,31 @@
             <h4>Pacing des ressources dans le temps</h4>
             <p>À quel rythme une ressource doit devenir disponible, abondante, puis obsolète au fil d'une partie ou d'une progression. Un mauvais pacing produit soit une pénurie frustrante en début de jeu, soit un excédent qui rend les décisions économiques insignifiantes en fin de jeu.</p>
           </div>
+          <div class="mini-card">
+            <h4>La notion de palier</h4>
+            <p>Un palier est un point de l'économie où tout le contexte bascule qualitativement plutôt que de progresser en continu — franchir un palier rend souvent obsolète ce qui précède, débloque un nouveau tier de ressources, et force le joueur à repenser son économie plutôt qu'à simplement l'agrandir. C'est un concept proche du pacing mais distinct : le pacing est continu, le palier est un saut discret.</p>
+            <ul>
+              <li><strong>Age of Empires (II)</strong> — les 4 âges (Sombre, Féodal, Château, Impérial) : chaque avancée débloque de nouvelles unités, bâtiments et technologies, et impose un choix stratégique entre investir dans l'avancée d'âge (en nourriture et en or) ou continuer à développer l'économie de l'âge actuel.</li>
+              <li><strong>Valheim</strong> — la progression par biome (Prairies → Forêt Noire → Marais → Montagnes → Plaines → Mistlands...) impose un nouveau tier de métal à chaque fois (étain + cuivre → bronze, puis fer, puis argent, puis métal noir), chaque tier n'étant débloqué qu'en battant le boss du palier précédent.</li>
+              <li><strong>Dyson Sphere Program</strong> — l'arbre technologique impose des paliers de matériaux de plus en plus avancés ; chaque saut de palier oblige à réorganiser les chaînes de production déjà construites plutôt qu'à simplement les prolonger.</li>
+            </ul>
+          </div>
         </div>
 
         <div class="compare" style="margin-top:22px;">
+          <div class="compare-col">
+            <h4>Économie globale (agrégée)</h4>
+            <div class="compare-row"><span class="k">Principe</span><span class="v">Le joueur pilote un agrégat de décisions abstraites ; la cohérence se juge à l'échelle de la civilisation entière, pas transaction par transaction.</span></div>
+            <div class="compare-row"><span class="k">Terrain typique</span><span class="v">Civilization, un city-builder macro, un 4X.</span></div>
+          </div>
+          <div class="compare-col alt">
+            <h4>Économie gérée par le joueur (directe)</h4>
+            <div class="compare-row"><span class="k">Principe</span><span class="v">Chaque nœud du flux économique est une décision concrète et visible — une machine, un convoyeur, un bâtiment posé à la main.</span></div>
+            <div class="compare-row"><span class="k">Terrain typique</span><span class="v">Dyson Sphere Program, Factorio, un factory game.</span></div>
+          </div>
+        </div>
+
+        <div class="compare">
           <div class="compare-col">
             <h4>Marché piloté par les joueurs</h4>
             <div class="compare-row"><span class="k">Principe</span><span class="v">Les prix émergent des échanges entre joueurs (offre/demande réelle), le designer fixe les règles du jeu mais pas les prix.</span></div>
@@ -577,6 +616,19 @@
             <div class="compare-row"><span class="k">Principe</span><span class="v">Les prix et les taux sont fixés directement par le designer (magasins PNJ, taux de conversion fixes).</span></div>
             <div class="compare-row"><span class="k">Avantage</span><span class="v">Prévisible, facile à équilibrer et à corriger rapidement.</span></div>
             <div class="compare-row"><span class="k">Risque</span><span class="v">Peut sembler artificiel ou rigide si le joueur sent que rien ne répond à ses actions.</span></div>
+          </div>
+        </div>
+
+        <div class="compare">
+          <div class="compare-col">
+            <h4>Économie solo</h4>
+            <div class="compare-row"><span class="k">Principe</span><span class="v">Tout est affaire de rythme et de temps passé ; l'équilibrage se pense sur une seule trajectoire de joueur dans la durée, sans comparaison à faire avec d'autres joueurs.</span></div>
+            <div class="compare-row"><span class="k">Terrain typique</span><span class="v">Un jeu de stratégie solo, un jeu de gestion, une campagne.</span></div>
+          </div>
+          <div class="compare-col alt">
+            <h4>Économie PvP</h4>
+            <div class="compare-row"><span class="k">Principe</span><span class="v">Plusieurs économies parallèles — une par joueur, faction ou camp — doivent rester équilibrées les unes par rapport aux autres, pas seulement cohérentes en interne : un problème de comparaison bien plus dur qu'un problème de rythme.</span></div>
+            <div class="compare-row"><span class="k">Terrain typique</span><span class="v">Un jeu de stratégie compétitif, un jeu de plateau asymétrique, un MOBA.</span></div>
           </div>
         </div>
 
@@ -596,7 +648,7 @@
 
       <section id="etudes-de-cas">
         <h2>Études de cas concrètes</h2>
-        <p class="section-sub">Cinq économies très différentes dans leur échelle et leur philosophie, mais qui posent toutes le même problème central : rester cohérentes dans la durée.</p>
+        <p class="section-sub">Six économies très différentes dans leur échelle et leur philosophie, mais qui posent toutes le même problème central : rester cohérentes dans la durée.</p>
 
         <div class="example-grid">
 
@@ -697,6 +749,25 @@
             </div>
           </div>
 
+          <div class="example-card">
+            <div class="game">Northgard</div>
+            <div class="facets">
+              <span>Shiro Games</span>
+              <span>PC / Console</span>
+              <span>Stratégie 4X asymétrique</span>
+              <span>Studio indépendant (taille moyenne)</span>
+              <span>Économie de faction</span>
+            </div>
+            <div class="why">
+              Deux problèmes économiques distincts cohabitent dans ce même jeu : équilibrer des factions aux identités radicalement différentes les unes par rapport aux autres, et gérer une production qui n'a presque aucun plafond dur.
+              <ul>
+                <li>Chaque clan jouable a un bonus ou une mécanique de ressource qui lui est propre, à équilibrer pour qu'aucun ne soit strictement supérieur. Le clan du Taureau (Himminbrjotir en version originale, l'un des clans additionnels du jeu) l'illustre bien : +40&nbsp;% de production sur ses bâtiments spécialisés et +15&nbsp;% d'attaque/résistance pour ses unités, mais chaque bâtiment de production ne peut accueillir qu'un seul travailleur et ses maisons logent moins d'habitants que celles des autres clans, en plus d'une consommation de nourriture plus élevée — un clan généralement considéré comme difficile à manier et plutôt orienté fin de partie, précisément parce que son avantage se paie ailleurs dans le système.</li>
+                <li>Sur l'économie de production interne, le joueur peut en théorie produire n'importe quelle ressource en quantité quasi infinie en assignant des villageois aux métiers correspondants — il n'y a pas de plafond dur de production comme dans un factory game. La vraie contrainte n'est donc pas une limite de ressource, mais la <strong>charge cognitive</strong> (suivre mentalement un nombre croissant de villageois et de métiers devient vite difficile, bien avant toute limite du jeu), le <strong>coût d'opportunité</strong> (un villageois assigné à un métier est un villageois qui ne fait pas autre chose — bûcheron plutôt que soldat) et le <strong>coût de changement</strong> (réassigner un villageois d'un métier à un autre n'est pas gratuit : temps, nourriture, ou perte de production pendant la transition).</li>
+              </ul>
+              <p style="margin:10px 0 0; font-size:0.82rem; color:var(--ink-faint);">Chiffres de bonus du clan du Taureau vérifiés via le wiki communautaire du jeu ; pas de source fiable trouvée sur un historique précis de patchs d'équilibrage pour ce clan — traité ici comme illustration de principe plutôt que comme historique de balance documenté.</p>
+            </div>
+          </div>
+
         </div>
       </section>
 
@@ -706,7 +777,7 @@
           <li>Economic Designer système ≠ Economic Designer monétisation : le premier garde une économie cohérente, le second convertit un joueur en revenu — deux métiers, deux focus, deux jeux de données.</li>
           <li>Toute économie in-game se pense en faucets et en sinks : la question n'est jamais « combien » dans l'absolu, mais « est-ce que ça reste équilibré dans la durée ».</li>
           <li>Économie fermée (une partie, un run) et économie ouverte (un jeu-service persistant) ne posent pas les mêmes contraintes de conception — un système pensé pour l'une échoue souvent tel quel dans l'autre.</li>
-          <li>Des jeux aussi différents qu'EVE Online, Civilization, Dyson Sphere Program, Anno 1800 ou World of Warcraft affrontent tous la même question de fond avec des réponses radicalement différentes — il n'y a pas une seule bonne architecture économique, seulement des architectures cohérentes avec leur contexte.</li>
+          <li>Des jeux aussi différents qu'EVE Online, Civilization, Dyson Sphere Program, Anno 1800, World of Warcraft ou Northgard affrontent tous la même question de fond avec des réponses radicalement différentes — il n'y a pas une seule bonne architecture économique, seulement des architectures cohérentes avec leur contexte.</li>
         </ul>
       </section>
 
