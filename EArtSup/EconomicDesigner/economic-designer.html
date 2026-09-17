@@ -1,0 +1,717 @@
+<title>Economic Designer — Cohérence d'une économie in-game</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zilla+Slab:wght@400;500;600;700&family=Karla:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap">
+<style>
+  :root{
+    --bg:#E8E4D9;
+    --surface:#F4F1E8;
+    --surface-alt:#FFFFFF;
+    --ink:#24211B;
+    --ink-soft:#5F5847;
+    --ink-faint:#8B8371;
+    --line:#D6CFBC;
+    --accent:#BE7A1F;
+    --accent-strong:#8F5A14;
+    --accent-2:#A23A33;
+    --accent-2-strong:#7C2B26;
+    --dot: rgba(36,33,27,0.07);
+    --shadow: rgba(36,33,27,0.10);
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#1C1B17;
+      --surface:#242219;
+      --surface-alt:#2C2A20;
+      --ink:#ECE6D6;
+      --ink-soft:#B7AF9A;
+      --ink-faint:#857D69;
+      --line:#3C392E;
+      --accent:#E2A44C;
+      --accent-strong:#F0C583;
+      --accent-2:#DD7A72;
+      --accent-2-strong:#EDA098;
+      --dot: rgba(236,230,214,0.055);
+      --shadow: rgba(0,0,0,0.35);
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#1C1B17;
+    --surface:#242219;
+    --surface-alt:#2C2A20;
+    --ink:#ECE6D6;
+    --ink-soft:#B7AF9A;
+    --ink-faint:#857D69;
+    --line:#3C392E;
+    --accent:#E2A44C;
+    --accent-strong:#F0C583;
+    --accent-2:#DD7A72;
+    --accent-2-strong:#EDA098;
+    --dot: rgba(236,230,214,0.055);
+    --shadow: rgba(0,0,0,0.35);
+  }
+
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  @media (prefers-reduced-motion: reduce){ html{scroll-behavior:auto;} }
+
+  body{
+    margin:0;
+    background:var(--bg);
+    background-image: radial-gradient(var(--dot) 1px, transparent 1px);
+    background-size: 22px 22px;
+    color:var(--ink);
+    font-family:'Karla', system-ui, sans-serif;
+    line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  h1,h2,h3{
+    font-family:'Zilla Slab', Georgia, serif;
+    text-wrap:balance;
+    margin:0;
+    color:var(--ink);
+  }
+
+  .mono{ font-family:'IBM Plex Mono', ui-monospace, monospace; }
+
+  a{ color:var(--accent-strong); }
+  a:focus-visible, button:focus-visible, .toc a:focus-visible{
+    outline:2px solid var(--accent);
+    outline-offset:3px;
+  }
+
+  .page{ max-width:1180px; margin:0 auto; padding:0 24px 96px; }
+
+  /* ---------- HERO ---------- */
+  .hero{
+    padding:56px 0 36px;
+    border-bottom:1px solid var(--line);
+    margin-bottom:8px;
+  }
+  .eyebrow{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:0.72rem;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    color:var(--accent-strong);
+    margin:0 0 14px;
+  }
+  .hero h1{
+    font-size:clamp(2.1rem, 4.2vw, 3.1rem);
+    font-weight:700;
+    letter-spacing:-0.01em;
+  }
+  .hero p.lede{
+    max-width:68ch;
+    margin:14px 0 0;
+    color:var(--ink-soft);
+    font-size:1.05rem;
+  }
+
+  .stat-strip{
+    display:flex;
+    flex-wrap:wrap;
+    gap:0;
+    margin-top:32px;
+    border:1px solid var(--line);
+    background:var(--surface);
+    border-radius:4px;
+    overflow:hidden;
+  }
+  .stat{
+    flex:1 1 200px;
+    padding:16px 20px;
+    border-right:1px solid var(--line);
+  }
+  .stat:last-child{ border-right:none; }
+  .stat .label{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:0.68rem;
+    letter-spacing:0.1em;
+    text-transform:uppercase;
+    color:var(--ink-faint);
+    display:block;
+    margin-bottom:6px;
+  }
+  .stat .value{
+    font-family:'Zilla Slab', serif;
+    font-weight:600;
+    font-size:1.1rem;
+  }
+
+  /* ---------- LAYOUT ---------- */
+  .layout{
+    display:grid;
+    grid-template-columns: 232px 1fr;
+    gap:48px;
+    align-items:start;
+    padding-top:36px;
+  }
+  @media (max-width: 880px){ .layout{ grid-template-columns: 1fr; } }
+
+  .toc{
+    position:sticky;
+    top:24px;
+    display:flex;
+    flex-direction:column;
+    gap:2px;
+  }
+  @media (max-width: 880px){ .toc{ position:static; } }
+  .toc-title{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:0.68rem;
+    letter-spacing:0.1em;
+    text-transform:uppercase;
+    color:var(--ink-faint);
+    margin-bottom:10px;
+  }
+  .toc a{
+    text-decoration:none;
+    color:var(--ink-soft);
+    font-size:0.92rem;
+    padding:7px 10px;
+    border-radius:4px;
+    border-left:2px solid transparent;
+  }
+  .toc a:hover{ color:var(--ink); background:var(--surface); }
+
+  main{ min-width:0; }
+  section{ margin-bottom:56px; scroll-margin-top:24px; }
+  section h2{
+    font-size:clamp(1.4rem, 2.4vw, 1.85rem);
+    margin-bottom:6px;
+  }
+  .section-sub{
+    color:var(--ink-soft);
+    max-width:72ch;
+    margin:0 0 24px;
+  }
+
+  /* ---------- SEQUENCE BLOCK ---------- */
+  .seq{
+    border:1px solid var(--line);
+    background:var(--surface);
+    border-radius:8px;
+    overflow:hidden;
+    margin-bottom:22px;
+  }
+  .seq-head{
+    display:flex;
+    align-items:flex-start;
+    gap:16px;
+    padding:20px 24px;
+    border-bottom:1px solid var(--line);
+    background:var(--surface-alt);
+  }
+  .seq-head h3{ font-size:1.18rem; font-weight:600; font-family:'Karla',sans-serif; }
+  .seq-tag{
+    display:block;
+    margin-top:4px;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:0.72rem;
+    letter-spacing:0.06em;
+    color:var(--ink-faint);
+  }
+  .seq-body{ padding:22px 24px; }
+
+  /* ---------- CARDS ---------- */
+  .col-grid{ display:grid; gap:14px; }
+  .col-grid--2{ grid-template-columns:repeat(2,1fr); }
+  .col-grid--3{ grid-template-columns:repeat(3,1fr); }
+  @media (max-width: 720px){ .col-grid--2, .col-grid--3{ grid-template-columns:1fr; } }
+  .stack-cards{ display:flex; flex-direction:column; gap:14px; }
+  .mini-card{
+    border:1px solid var(--line);
+    background:var(--surface-alt);
+    border-radius:6px;
+    padding:14px 16px;
+  }
+  .mini-card h4{ margin:0 0 8px; font-size:0.98rem; font-weight:600; font-family:'Karla',sans-serif; }
+  .mini-card p{ margin:0; color:var(--ink-soft); font-size:0.9rem; }
+  .mini-card ul{ margin:0; padding-left:1.15em; color:var(--ink-soft); font-size:0.9rem; }
+  .mini-card ul li{ margin-bottom:6px; }
+  .mini-card ul li:last-child{ margin-bottom:0; }
+
+  /* ---------- COMPARE ---------- */
+  .compare{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    border:1px solid var(--line);
+    border-radius:6px;
+    overflow:hidden;
+    margin-bottom:16px;
+  }
+  @media (max-width: 720px){ .compare{ grid-template-columns:1fr; } }
+  .compare-col{ padding:16px 18px; background:var(--surface-alt); }
+  .compare-col:first-child{ border-right:1px solid var(--line); }
+  @media (max-width: 720px){ .compare-col:first-child{ border-right:none; border-bottom:1px solid var(--line); } }
+  .compare-col h4{
+    margin:0 0 10px;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:0.74rem;
+    letter-spacing:0.08em;
+    text-transform:uppercase;
+    color:var(--accent-strong);
+    font-weight:500;
+  }
+  .compare-col.alt h4{ color:var(--accent-2-strong); }
+  .compare-row{ margin-bottom:10px; }
+  .compare-row:last-child{ margin-bottom:0; }
+  .compare-row .k{
+    display:block;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:0.66rem;
+    letter-spacing:0.06em;
+    text-transform:uppercase;
+    color:var(--ink-faint);
+    margin-bottom:2px;
+  }
+  .compare-row .v{ font-size:0.94rem; color:var(--ink-soft); line-height:1.5; }
+
+  /* ---------- EXAMPLE CARDS (études de cas) ---------- */
+  .example-grid{ display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:16px; }
+  .example-card{ border:1px solid var(--line); background:var(--surface-alt); border-radius:6px; padding:16px 18px; }
+  .example-card .game{ font-family:'Zilla Slab',serif; font-weight:600; font-size:1.05rem; margin-bottom:8px; }
+  .example-card .facets{ display:flex; flex-wrap:wrap; gap:6px; margin-bottom:12px; }
+  .example-card .facets span{
+    font-family:'IBM Plex Mono', monospace; font-size:0.66rem; letter-spacing:0.02em; color:var(--ink-faint);
+    background:var(--surface); border:1px solid var(--line); padding:3px 8px; border-radius:10px; white-space:nowrap;
+  }
+  .example-card .why{ font-size:0.92rem; color:var(--ink-soft); line-height:1.6; }
+  .example-card .why ul{ margin:8px 0 0; padding-left:1.15em; }
+  .example-card .why li{ margin-bottom:6px; }
+  .example-card .why li:last-child{ margin-bottom:0; }
+
+  /* ---------- PIPELINE / TAGS ---------- */
+  .pipeline{ display:flex; flex-wrap:wrap; align-items:center; gap:8px; margin-bottom:8px; }
+  .pipeline:last-child{ margin-bottom:0; }
+  .pipeline-label{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:0.68rem;
+    letter-spacing:0.1em;
+    text-transform:uppercase;
+    color:var(--ink-faint);
+    width:100%;
+    margin-bottom:2px;
+  }
+  .chip{
+    display:inline-block;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:0.72rem;
+    letter-spacing:0.03em;
+    padding:5px 10px;
+    border-radius:10px;
+    border:1px solid var(--line);
+    color:var(--ink-soft);
+    background:var(--surface-alt);
+    white-space:nowrap;
+  }
+  .chip.accent{ border-color:var(--accent); color:var(--accent-strong); background:rgba(190,122,31,0.08); }
+
+  /* ---------- CALLOUT ---------- */
+  .callout{
+    border-left:3px solid var(--accent);
+    background:var(--surface-alt);
+    border-radius:0 4px 4px 0;
+    padding:14px 16px;
+    margin:16px 0 0;
+  }
+  .callout .callout-tag{
+    display:inline-block;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:0.66rem;
+    letter-spacing:0.1em;
+    text-transform:uppercase;
+    color:var(--accent-strong);
+    margin-bottom:8px;
+  }
+  .callout.alt{ border-left-color:var(--accent-2); }
+  .callout.alt .callout-tag{ color:var(--accent-2-strong); }
+  .callout p{ margin:0; }
+
+  /* ---------- NUMBERED / CLOSING LISTS ---------- */
+  .numbered{ list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:12px; }
+  .numbered li{ display:flex; gap:14px; align-items:flex-start; }
+  .numbered .n{ font-family:'IBM Plex Mono', monospace; color:var(--accent-strong); font-size:0.88rem; padding-top:2px; flex:none; }
+  .numbered p{ margin:0; }
+
+  .closing-list{ list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:9px; }
+  .closing-list li{ display:flex; gap:10px; color:var(--ink-soft); }
+  .closing-list li::before{ content:'—'; color:var(--accent-strong); flex:none; }
+
+  .pb-before{ break-before:page; page-break-before:always; }
+
+  /* ---------- TABLES ---------- */
+  .table-wrap{ overflow-x:auto; border:1px solid var(--line); border-radius:6px; }
+  table{ border-collapse:collapse; width:100%; min-width:520px; font-size:0.94rem; }
+  thead th{
+    text-align:left;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:0.7rem;
+    letter-spacing:0.08em;
+    text-transform:uppercase;
+    color:var(--ink-faint);
+    background:var(--surface-alt);
+    padding:10px 14px;
+    border-bottom:1px solid var(--line);
+    white-space:nowrap;
+  }
+  tbody td{
+    padding:10px 14px;
+    border-bottom:1px solid var(--line);
+    vertical-align:top;
+  }
+  tbody tr:last-child td{ border-bottom:none; }
+  tbody tr:nth-child(even){ background:var(--surface); }
+
+  .footnote{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:0.78rem;
+    color:var(--ink-faint);
+    letter-spacing:0.02em;
+    margin-top:16px;
+    padding-top:14px;
+    border-top:1px solid var(--line);
+  }
+
+  footer{
+    margin-top:24px;
+    padding-top:24px;
+    border-top:1px solid var(--line);
+    color:var(--ink-faint);
+    font-size:0.82rem;
+  }
+
+  @media print{
+    :root{ color-scheme:light; }
+    body{ background-image:none; }
+    .page{ max-width:none; padding:0 8px 24px; }
+    .hero{ padding-top:12px; }
+    .layout{ display:block; padding-top:20px; }
+    .toc{ display:none; }
+    a{ color:var(--ink); text-decoration:none; }
+    section{ break-inside:avoid-page; margin-bottom:36px; }
+    .seq{ break-inside:avoid-page; }
+    .table-wrap{ overflow-x:visible; }
+  }
+</style>
+
+<div class="page">
+
+  <header class="hero">
+    <p class="eyebrow">EARTSUP · Support de cours</p>
+    <h1>Economic Designer — la cohérence d'une économie in-game</h1>
+    <p class="lede">Un métier de system design trop souvent confondu avec la monétisation : ici, on parle de flux de ressources, de monnaies, d'offre et de demande — pas de boutique ni de battle pass.</p>
+    <div class="stat-strip">
+      <div class="stat"><span class="label">Rôle</span><span class="value">Economic Designer (système)</span></div>
+      <div class="stat"><span class="label">À ne pas confondre avec</span><span class="value">Economic Designer (monétisation)</span></div>
+      <div class="stat"><span class="label">Famille</span><span class="value">System / Simulation Design</span></div>
+      <div class="stat"><span class="label">Études de cas</span><span class="value">5 jeux</span></div>
+    </div>
+  </header>
+
+  <div class="layout">
+    <nav class="toc" id="toc">
+      <span class="toc-title">Sommaire</span>
+      <a href="#definition">Définition &amp; périmètre</a>
+      <a href="#quotidien">Le travail au quotidien</a>
+      <a href="#outils">Les outils</a>
+      <a href="#concepts">Concepts clés</a>
+      <a href="#etudes-de-cas">Études de cas</a>
+      <a href="#cloture">Synthèse</a>
+    </nav>
+
+    <main>
+
+      <section id="definition">
+        <h2>Définition &amp; périmètre du métier</h2>
+        <p class="section-sub">Le point de confusion le plus fréquent chez les étudiants : il existe deux métiers différents qui portent le même nom.</p>
+
+        <div class="compare">
+          <div class="compare-col">
+            <h4>Economic Designer — Système</h4>
+            <div class="compare-row"><span class="k">Objet</span><span class="v">La cohérence de l'économie <strong>in-game</strong> : flux de ressources, monnaies, offre/demande, équilibrage systémique.</span></div>
+            <div class="compare-row"><span class="k">Il modélise</span><span class="v">Comment l'or, le mana, l'énergie ou n'importe quelle ressource circule, s'accumule et se dépense dans les systèmes du jeu.</span></div>
+            <div class="compare-row"><span class="k">Question centrale</span><span class="v">Est-ce que l'économie du jeu reste stable, lisible et intéressante sur toute sa durée de vie ?</span></div>
+            <div class="compare-row"><span class="k">Exemples de métier</span><span class="v">Balancing designer sur un RPG, économiste de studio sur un MMO, designer de systèmes sur un city-builder.</span></div>
+          </div>
+          <div class="compare-col alt">
+            <h4>Economic Designer — Monétisation</h4>
+            <div class="compare-row"><span class="k">Objet</span><span class="v">La conversion du joueur en <strong>revenu réel</strong> : boutique, battle pass, achats intégrés, LiveOps commercial.</span></div>
+            <div class="compare-row"><span class="k">Il modélise</span><span class="v">Le tunnel d'achat, le pricing, les offres promotionnelles, la rétention liée aux revenus.</span></div>
+            <div class="compare-row"><span class="k">Question centrale</span><span class="v">Est-ce que le jeu génère assez de revenu, avec quel taux de conversion et quel ARPU ?</span></div>
+            <div class="compare-row"><span class="k">Exemples de métier</span><span class="v">F2P monetization designer, LiveOps producer, growth designer sur un mobile.</span></div>
+          </div>
+        </div>
+
+        <div class="callout">
+          <span class="callout-tag">À retenir</span>
+          <p>Les deux métiers peuvent coexister dans la même équipe et se parler énormément (une boutique mal pensée peut casser une économie de système, et inversement) — mais ce sont deux focus différents, avec des outils et des indicateurs différents. Ce document ne traite que du premier.</p>
+        </div>
+      </section>
+
+      <section id="quotidien">
+        <h2>Le travail au quotidien</h2>
+        <p class="section-sub">Ce que fait concrètement un economic designer de système, semaine après semaine.</p>
+
+        <div class="stack-cards">
+          <div class="mini-card">
+            <h4>Modélisation de systèmes</h4>
+            <ul>
+              <li>Cartographier toutes les sources et toutes les destinations d'une ressource ou d'une monnaie avant même d'écrire une seule valeur.</li>
+              <li>Construire des diagrammes de flux (qui produit quoi, qui consomme quoi, à quelle vitesse) pour visualiser le système dans son ensemble.</li>
+              <li>Anticiper les boucles de rétroaction : une ressource qui génère elle-même plus de cette ressource peut faire s'emballer tout le système.</li>
+            </ul>
+          </div>
+          <div class="mini-card">
+            <h4>Équilibrage de courbes de progression</h4>
+            <ul>
+              <li>Définir combien coûte chaque palier de progression (niveau, amélioration, bâtiment) et à quel rythme le joueur peut se le permettre.</li>
+              <li>Choisir entre courbes linéaires, exponentielles ou plafonnées selon l'effet recherché (progression constante vs sentiment d'accélération vs fin de contenu gérée).</li>
+              <li>Ajuster en fonction du temps de jeu réel des joueurs, pas seulement de la théorie sur tableur.</li>
+            </ul>
+          </div>
+          <div class="mini-card">
+            <h4>Simulation de flux — faucets &amp; sinks</h4>
+            <ul>
+              <li>Simuler à l'avance, avant la sortie, si les sources de ressources (faucets) et les destructions de ressources (sinks) resteront équilibrées sur des dizaines ou des centaines d'heures de jeu simulées.</li>
+              <li>Tester des scénarios extrêmes (joueur hyper-actif, joueur passif, farm en équipe) pour vérifier que l'économie ne casse dans aucun cas.</li>
+            </ul>
+          </div>
+          <div class="mini-card">
+            <h4>Analyse de données et télémétrie sur jeux live</h4>
+            <ul>
+              <li>Suivre en continu des indicateurs réels : quantité de monnaie en circulation, vitesse de génération vs de dépense, prix moyens sur un marché joueur s'il existe.</li>
+              <li>Détecter les dérives (inflation qui s'installe, ressource qui devient inutile, exploit qui génère une ressource en boucle) avant qu'elles ne dégradent l'expérience.</li>
+              <li>Proposer des correctifs mesurés — souvent de petits ajustements répétés plutôt que des refontes brutales, pour ne pas punir les joueurs qui ont déjà investi dans le système.</li>
+            </ul>
+          </div>
+          <div class="mini-card">
+            <h4>Itération avec les autres designers</h4>
+            <ul>
+              <li>Avec le <strong>system designer</strong> : l'économie est souvent la colonne vertébrale des autres systèmes (craft, combat, progression).</li>
+              <li>Avec le <strong>level designer</strong> : le placement et la densité des ressources dans l'espace de jeu doivent respecter le pacing économique voulu.</li>
+              <li>Avec le <strong>narrative designer</strong> : une monnaie ou une ressource rare peut porter un sens narratif (ce qu'elle coûte de sacrifier raconte quelque chose).</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section id="outils">
+        <h2>Les outils utilisés</h2>
+        <p class="section-sub">Du tableur au dashboard de production, l'economic designer jongle entre prototypage rapide et données réelles à grande échelle.</p>
+
+        <div class="col-grid col-grid--2">
+          <div class="mini-card">
+            <h4>Tableurs — Excel / Google Sheets</h4>
+            <ul>
+              <li>L'outil numéro un pour modéliser des courbes, des tables de coûts et de premiers prototypes d'économie avant tout code.</li>
+              <li>Permet de tester des hypothèses très vite (« si je change ce taux de génération, qu'est-ce que ça change à l'heure 50 ? ») sans dépendre d'un développeur.</li>
+              <li>Reste l'outil de référence pour documenter et partager un modèle avec le reste de l'équipe.</li>
+            </ul>
+          </div>
+          <div class="mini-card">
+            <h4>Outils de simulation de systèmes — Machinations.io</h4>
+            <ul>
+              <li>Permet de construire visuellement un diagramme de flux économique (nœuds, connexions, taux) et de le faire tourner en simulation.</li>
+              <li>Utile pour repérer des boucles de rétroaction ou des déséquilibres qu'un simple tableur ne montre pas aussi clairement.</li>
+              <li>Sert aussi d'outil de communication avec le reste de l'équipe — un diagramme se lit plus vite qu'une feuille de calcul.</li>
+            </ul>
+          </div>
+          <div class="mini-card">
+            <h4>Scripts &amp; notebooks — Python (pandas, matplotlib)</h4>
+            <ul>
+              <li>Simuler une économie à grande échelle (des milliers de joueurs virtuels, des centaines d'heures simulées) là où un tableur atteint vite ses limites.</li>
+              <li>pandas pour manipuler de gros volumes de données de télémétrie, matplotlib (ou équivalent) pour visualiser des tendances dans le temps.</li>
+              <li>Permet de tester statistiquement la robustesse d'un système avant de le lâcher en production.</li>
+            </ul>
+          </div>
+          <div class="mini-card">
+            <h4>Dashboards de télémétrie live-ops</h4>
+            <ul>
+              <li>Une fois le jeu sorti, l'économie théorique laisse place aux vrais chiffres : masse monétaire en circulation, vitesse de génération vs de dépense, taux d'inflation observé.</li>
+              <li>Ces dashboards sont souvent la première alerte en cas de dérive (exploit, ressource qui s'accumule sans plus être dépensée).</li>
+            </ul>
+          </div>
+          <div class="mini-card">
+            <h4>Playtesting itératif</h4>
+            <ul>
+              <li>Aucune simulation ne remplace un vrai joueur qui trouve la faille ou l'exploit auquel personne n'avait pensé.</li>
+              <li>Le playtest confronte le modèle théorique au comportement réel — souvent plus opportuniste ou plus créatif que prévu.</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section id="concepts">
+        <h2>Concepts clés</h2>
+        <p class="section-sub">Le vocabulaire de base pour parler d'économie de système sans ambiguïté.</p>
+
+        <div class="stack-cards">
+          <div class="mini-card">
+            <h4>Faucets &amp; sinks</h4>
+            <p>Un <strong>faucet</strong> (robinet) est toute source qui injecte une ressource dans l'économie — récompense de quête, butin, revenu passif. Un <strong>sink</strong> (puits) est tout ce qui la retire définitivement — frais, réparation, destruction, taxe. Une économie stable a besoin des deux, à peu près en équilibre dans la durée.</p>
+          </div>
+          <div class="mini-card">
+            <h4>Boucles économiques</h4>
+            <p>Le cycle répété par lequel un joueur transforme du temps ou une ressource en une autre ressource, encore et encore (farmer → crafter → vendre → réinvestir). C'est la version économique de la boucle de gameplay : si elle est mal calibrée, elle ennuie ou elle explose.</p>
+          </div>
+          <div class="mini-card">
+            <h4>Inflation / déflation d'une monnaie in-game</h4>
+            <p><strong>Inflation</strong> : trop de faucets par rapport aux sinks, la monnaie perd de la valeur, les prix grimpent. <strong>Déflation</strong> : l'inverse, la monnaie devient rare et précieuse, ce qui peut décourager la dépense. Une monnaie in-game se gère exactement comme une monnaie réelle, à cette différence près que le designer contrôle directement l'offre.</p>
+          </div>
+          <div class="mini-card">
+            <h4>Pacing des ressources dans le temps</h4>
+            <p>À quel rythme une ressource doit devenir disponible, abondante, puis obsolète au fil d'une partie ou d'une progression. Un mauvais pacing produit soit une pénurie frustrante en début de jeu, soit un excédent qui rend les décisions économiques insignifiantes en fin de jeu.</p>
+          </div>
+        </div>
+
+        <div class="compare" style="margin-top:22px;">
+          <div class="compare-col">
+            <h4>Marché piloté par les joueurs</h4>
+            <div class="compare-row"><span class="k">Principe</span><span class="v">Les prix émergent des échanges entre joueurs (offre/demande réelle), le designer fixe les règles du jeu mais pas les prix.</span></div>
+            <div class="compare-row"><span class="k">Avantage</span><span class="v">Économie vivante, imprévisible, souvent perçue comme plus « réelle » et engageante.</span></div>
+            <div class="compare-row"><span class="k">Risque</span><span class="v">Manipulation de marché, cartels, effondrement en cas de choc (duplication, exploit).</span></div>
+          </div>
+          <div class="compare-col alt">
+            <h4>Marché designé</h4>
+            <div class="compare-row"><span class="k">Principe</span><span class="v">Les prix et les taux sont fixés directement par le designer (magasins PNJ, taux de conversion fixes).</span></div>
+            <div class="compare-row"><span class="k">Avantage</span><span class="v">Prévisible, facile à équilibrer et à corriger rapidement.</span></div>
+            <div class="compare-row"><span class="k">Risque</span><span class="v">Peut sembler artificiel ou rigide si le joueur sent que rien ne répond à ses actions.</span></div>
+          </div>
+        </div>
+
+        <div class="compare">
+          <div class="compare-col">
+            <h4>Économie fermée</h4>
+            <div class="compare-row"><span class="k">Principe</span><span class="v">Les ressources ne sortent jamais du système ; ce qui est créé doit être détruit quelque part pour rester stable.</span></div>
+            <div class="compare-row"><span class="k">Terrain de jeu typique</span><span class="v">Une partie de stratégie ou de plateau à durée fixe, un run de roguelike.</span></div>
+          </div>
+          <div class="compare-col alt">
+            <h4>Économie ouverte</h4>
+            <div class="compare-row"><span class="k">Principe</span><span class="v">De nouvelles ressources peuvent apparaître en continu (nouveau contenu, nouveaux joueurs) — l'équilibre doit être maintenu indéfiniment, pas seulement sur une partie.</span></div>
+            <div class="compare-row"><span class="k">Terrain de jeu typique</span><span class="v">Un MMO ou un jeu-service persistant, où l'économie doit tenir plusieurs années.</span></div>
+          </div>
+        </div>
+      </section>
+
+      <section id="etudes-de-cas">
+        <h2>Études de cas concrètes</h2>
+        <p class="section-sub">Cinq économies très différentes dans leur échelle et leur philosophie, mais qui posent toutes le même problème central : rester cohérentes dans la durée.</p>
+
+        <div class="example-grid">
+
+          <div class="example-card">
+            <div class="game">EVE Online</div>
+            <div class="facets">
+              <span>CCP Games</span>
+              <span>PC</span>
+              <span>MMO spatial sandbox</span>
+              <span>AAA (&gt; 20 ans de service)</span>
+              <span>Économie joueur-driven</span>
+            </div>
+            <div class="why">
+              Le cas d'école de l'économie pilotée par les joueurs. En juin 2007, CCP est le premier studio à embaucher un économiste professionnel à temps plein, le Dr. Eyjólfur Guðmundsson, pour surveiller l'ISK (la monnaie du jeu) comme une vraie économie nationale.
+              <ul>
+                <li>De 2007 à 2010, CCP publie une <strong>Quarterly Economic Newsletter</strong> détaillée (jusqu'à 50 pages) ; depuis 2016, un <strong>Monthly Economic Report</strong> mensuel a pris le relais et continue d'être publié aujourd'hui.</li>
+                <li><strong>Faucets</strong> : récompenses de missions, primes (bounties), butin sur épaves. <strong>Sinks</strong> : taxes de marché, frais de courtage (broker fees), assurance de vaisseaux.</li>
+                <li>La destruction de vaisseaux en combat n'est pas un sink d'ISK à proprement parler, mais un sink massif de <strong>biens manufacturés</strong> : chaque vaisseau perdu doit être reconstruit, ce qui alimente en continu toute l'industrie du jeu.</li>
+                <li>Quand les rapports économiques montrent que les faucets dépassent durablement les sinks, CCP augmente les taxes de marché pour retirer plus d'ISK en circulation et lutter contre l'inflation.</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="example-card">
+            <div class="game">Civilization (V &amp; VI)</div>
+            <div class="facets">
+              <span>Firaxis Games</span>
+              <span>PC / Console</span>
+              <span>4X tour par tour</span>
+              <span>AAA</span>
+              <span>Économie de pacing macro</span>
+            </div>
+            <div class="why">
+              La gestion du pacing de plusieurs ressources (or, science, production, culture) sur une partie de plusieurs dizaines d'heures, avec un risque permanent de snowballing — le joueur en tête prend un avantage qui s'auto-renforce.
+              <ul>
+                <li>Civilization VI introduit un mécanisme de friction délibérée sur le logement et le bonheur (amenities) pour freiner l'expansion des civilisations les plus avancées plutôt que de la récompenser sans limite.</li>
+                <li>La tension inverse existe aussi : à haute difficulté, le rythme des technologies peut dépasser celui de la production, au point que des unités deviennent obsolètes avant même d'être construites — un déséquilibre de pacing surveillé de près par la communauté à chaque extension.</li>
+                <li>Chaque itération de la série retravaille l'équilibre entre liberté stratégique en début de partie et contrôle du snowballing en fin de partie, sans qu'aucune version ne considère le problème comme définitivement résolu.</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="example-card">
+            <div class="game">Dyson Sphere Program</div>
+            <div class="facets">
+              <span>Youthcat Studio / Gamera Games</span>
+              <span>PC</span>
+              <span>Automatisation / factory spatial</span>
+              <span>Indé (petite équipe)</span>
+              <span>Économie de flux &amp; logistique</span>
+            </div>
+            <div class="why">
+              Une économie de production pure, où la logistique devient littéralement le gameplay central plutôt qu'un système de soutien.
+              <ul>
+                <li>Les joueurs conçoivent des <strong>« Black Box »</strong> : des lignes de production autonomes et équilibrées qui ne consomment que des matières premières en entrée et produisent un composant fini en sortie, sans goulot d'étranglement interne.</li>
+                <li>Le <strong>throughput</strong> (débit) se mesure très concrètement en convoyeurs (Mk.I, Mk.II, Mk.III) : ajouter une machine de production au-delà de la capacité du convoyeur ne sert à rien, le gain doit toujours être vérifié en aval.</li>
+                <li>À l'échelle interstellaire, les <strong>Interstellar Logistics Stations</strong> transportent les ressources entre planètes et systèmes ; une erreur classique des joueurs est de les utiliser comme simples tampons de stockage plutôt que comme un vrai réseau logistique à optimiser.</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="example-card">
+            <div class="game">Anno 1800</div>
+            <div class="facets">
+              <span>Ubisoft Blue Byte / Ubisoft</span>
+              <span>PC / Console</span>
+              <span>City-builder économique</span>
+              <span>AAA</span>
+              <span>Économie en couches</span>
+            </div>
+            <div class="why">
+              Une économie de population imbriquée dans une économie de production, où chaque palier de développement urbain ouvre — et exige — un nouveau niveau de complexité.
+              <ul>
+                <li>Cinq paliers de population dans l'Ancien Monde (fermiers, ouvriers, artisans, ingénieurs, investisseurs), plus deux paliers propres au Nouveau Monde, chacun avec ses propres besoins de base et besoins de confort.</li>
+                <li>Les besoins de base sont obligatoires pour faire progresser un palier ; les besoins de confort sont optionnels mais influencent le bonheur — un système à deux vitesses qui force à prioriser.</li>
+                <li>Les chaînes de production s'imbriquent les unes dans les autres (la pomme de terre alimente la distillerie qui produit le schnaps consommé par les fermiers) : chaque nouveau produit ajoute un maillon, pas un système isolé.</li>
+                <li>Le commerce entre îles — souvent spécialisées chacune dans une partie de la chaîne — devient obligatoire pour équilibrer les imports et les exports à mesure que la ville grandit.</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="example-card">
+            <div class="game">World of Warcraft</div>
+            <div class="facets">
+              <span>Blizzard Entertainment</span>
+              <span>PC</span>
+              <span>MMORPG</span>
+              <span>AAA (&gt; 20 ans de service)</span>
+              <span>Économie de sinks en jeu vivant</span>
+            </div>
+            <div class="why">
+              Le contre-exemple utile à EVE Online : une économie où le designer garde un contrôle beaucoup plus direct sur les prix, mais qui reste vulnérable à l'accumulation de faucets au fil des extensions.
+              <ul>
+                <li><strong>Gold sinks</strong> classiques : frais de réparation (surtout après un wipe de donjon ou de raid), frais de dressage de compétences et de montures, objets cosmétiques coûteux (montures, mascottes) qui n'ont aucune utilité mécanique — juste un puits volontaire pour de l'or excédentaire.</li>
+                <li>Dans l'extension <em>The War Within</em>, le recraft d'équipement (améliorer un objet déjà façonné) ajoute un nouveau sink récurrent lié à l'artisanat.</li>
+                <li>Historiquement, chaque extension ajoute de nouveaux faucets (quêtes journalières, garnisons, missions passives) plus vite que de nouveaux sinks ne sont introduits — un déséquilibre cumulatif souvent cité comme la cause d'une inflation de l'or observable sur les vingt ans du jeu.</li>
+              </ul>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <section id="cloture">
+        <h2>Synthèse</h2>
+        <ul class="closing-list">
+          <li>Economic Designer système ≠ Economic Designer monétisation : le premier garde une économie cohérente, le second convertit un joueur en revenu — deux métiers, deux focus, deux jeux de données.</li>
+          <li>Toute économie in-game se pense en faucets et en sinks : la question n'est jamais « combien » dans l'absolu, mais « est-ce que ça reste équilibré dans la durée ».</li>
+          <li>Économie fermée (une partie, un run) et économie ouverte (un jeu-service persistant) ne posent pas les mêmes contraintes de conception — un système pensé pour l'une échoue souvent tel quel dans l'autre.</li>
+          <li>Des jeux aussi différents qu'EVE Online, Civilization, Dyson Sphere Program, Anno 1800 ou World of Warcraft affrontent tous la même question de fond avec des réponses radicalement différentes — il n'y a pas une seule bonne architecture économique, seulement des architectures cohérentes avec leur contexte.</li>
+        </ul>
+      </section>
+
+      <footer>EARTSUP · Economic Designer — support de cours autonome</footer>
+
+    </main>
+  </div>
+</div>
