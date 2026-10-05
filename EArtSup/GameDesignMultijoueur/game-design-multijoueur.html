@@ -1,0 +1,832 @@
+<title>Game Design multijoueur — matchmaking, asymétrie, dynamiques émergentes</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zilla+Slab:wght@400;500;600;700&family=Karla:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap">
+<style>
+  :root{
+    --bg:#E8E4D9;
+    --surface:#F4F1E8;
+    --surface-alt:#FFFFFF;
+    --ink:#24211B;
+    --ink-soft:#5F5847;
+    --ink-faint:#8B8371;
+    --line:#D6CFBC;
+    --accent:#BE7A1F;
+    --accent-strong:#8F5A14;
+    --accent-2:#A23A33;
+    --accent-2-strong:#7C2B26;
+    --dot: rgba(36,33,27,0.07);
+    --shadow: rgba(36,33,27,0.10);
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#1C1B17;
+      --surface:#242219;
+      --surface-alt:#2C2A20;
+      --ink:#ECE6D6;
+      --ink-soft:#B7AF9A;
+      --ink-faint:#857D69;
+      --line:#3C392E;
+      --accent:#E2A44C;
+      --accent-strong:#F0C583;
+      --accent-2:#DD7A72;
+      --accent-2-strong:#EDA098;
+      --dot: rgba(236,230,214,0.055);
+      --shadow: rgba(0,0,0,0.35);
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#1C1B17;
+    --surface:#242219;
+    --surface-alt:#2C2A20;
+    --ink:#ECE6D6;
+    --ink-soft:#B7AF9A;
+    --ink-faint:#857D69;
+    --line:#3C392E;
+    --accent:#E2A44C;
+    --accent-strong:#F0C583;
+    --accent-2:#DD7A72;
+    --accent-2-strong:#EDA098;
+    --dot: rgba(236,230,214,0.055);
+    --shadow: rgba(0,0,0,0.35);
+  }
+
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  @media (prefers-reduced-motion: reduce){ html{scroll-behavior:auto;} }
+
+  body{
+    margin:0;
+    background:var(--bg);
+    background-image: radial-gradient(var(--dot) 1px, transparent 1px);
+    background-size: 22px 22px;
+    color:var(--ink);
+    font-family:'Karla', system-ui, sans-serif;
+    line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  h1,h2,h3{
+    font-family:'Zilla Slab', Georgia, serif;
+    text-wrap:balance;
+    margin:0;
+    color:var(--ink);
+  }
+
+  .mono{ font-family:'IBM Plex Mono', ui-monospace, monospace; }
+
+  a{ color:var(--accent-strong); }
+  a:focus-visible, button:focus-visible, .toc a:focus-visible{
+    outline:2px solid var(--accent);
+    outline-offset:3px;
+  }
+
+  .page{ max-width:1180px; margin:0 auto; padding:0 24px 96px; }
+
+  /* ---------- HERO ---------- */
+  .hero{
+    padding:56px 0 36px;
+    border-bottom:1px solid var(--line);
+    margin-bottom:8px;
+  }
+  .eyebrow{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:0.72rem;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    color:var(--accent-strong);
+    margin:0 0 14px;
+  }
+  .hero h1{
+    font-size:clamp(2.1rem, 4.2vw, 3.1rem);
+    font-weight:700;
+    letter-spacing:-0.01em;
+  }
+  .hero p.lede{
+    max-width:68ch;
+    margin:14px 0 0;
+    color:var(--ink-soft);
+    font-size:1.05rem;
+  }
+
+  .stat-strip{
+    display:flex;
+    flex-wrap:wrap;
+    gap:0;
+    margin-top:32px;
+    border:1px solid var(--line);
+    background:var(--surface);
+    border-radius:4px;
+    overflow:hidden;
+  }
+  .stat{
+    flex:1 1 200px;
+    padding:16px 20px;
+    border-right:1px solid var(--line);
+  }
+  .stat:last-child{ border-right:none; }
+  .stat .label{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:0.68rem;
+    letter-spacing:0.1em;
+    text-transform:uppercase;
+    color:var(--ink-faint);
+    display:block;
+    margin-bottom:6px;
+  }
+  .stat .value{
+    font-family:'Zilla Slab', serif;
+    font-weight:600;
+    font-size:1.1rem;
+  }
+
+  /* ---------- LAYOUT ---------- */
+  .layout{
+    display:grid;
+    grid-template-columns: 232px 1fr;
+    gap:48px;
+    align-items:start;
+    padding-top:36px;
+  }
+  @media (max-width: 880px){ .layout{ grid-template-columns: 1fr; } }
+
+  .toc{
+    position:sticky;
+    top:24px;
+    display:flex;
+    flex-direction:column;
+    gap:2px;
+  }
+  @media (max-width: 880px){ .toc{ position:static; } }
+  .toc-title{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:0.68rem;
+    letter-spacing:0.1em;
+    text-transform:uppercase;
+    color:var(--ink-faint);
+    margin-bottom:10px;
+  }
+  .toc a{
+    text-decoration:none;
+    color:var(--ink-soft);
+    font-size:0.92rem;
+    padding:7px 10px;
+    border-radius:4px;
+    border-left:2px solid transparent;
+  }
+  .toc a:hover{ color:var(--ink); background:var(--surface); }
+  .toc .toc-dur{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:0.68rem;
+    color:var(--ink-faint);
+    float:right;
+  }
+
+  main{ min-width:0; }
+  section{ margin-bottom:56px; scroll-margin-top:24px; }
+  section h2{
+    font-size:clamp(1.4rem, 2.4vw, 1.85rem);
+    margin-bottom:6px;
+  }
+  .section-sub{
+    color:var(--ink-soft);
+    max-width:72ch;
+    margin:0 0 24px;
+  }
+  .section-dur{
+    display:inline-block;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:0.72rem;
+    letter-spacing:0.06em;
+    color:var(--accent-strong);
+    background:rgba(190,122,31,0.1);
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:3px 10px;
+    margin-bottom:12px;
+  }
+
+  /* ---------- CARDS ---------- */
+  .col-grid{ display:grid; gap:14px; }
+  .col-grid--2{ grid-template-columns:repeat(2,1fr); }
+  .col-grid--3{ grid-template-columns:repeat(3,1fr); }
+  @media (max-width: 720px){ .col-grid--2, .col-grid--3{ grid-template-columns:1fr; } }
+  .stack-cards{ display:flex; flex-direction:column; gap:14px; }
+  .mini-card{
+    border:1px solid var(--line);
+    background:var(--surface-alt);
+    border-radius:6px;
+    padding:14px 16px;
+  }
+  .mini-card h4{ margin:0 0 8px; font-size:0.98rem; font-weight:600; font-family:'Karla',sans-serif; }
+  .mini-card p{ margin:0; color:var(--ink-soft); font-size:0.9rem; }
+  .mini-card ul{ margin:0; padding-left:1.15em; color:var(--ink-soft); font-size:0.9rem; }
+  .mini-card ul li{ margin-bottom:6px; }
+  .mini-card ul li:last-child{ margin-bottom:0; }
+
+  /* ---------- COMPARE ---------- */
+  .compare{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    border:1px solid var(--line);
+    border-radius:6px;
+    overflow:hidden;
+    margin-bottom:16px;
+  }
+  @media (max-width: 720px){ .compare{ grid-template-columns:1fr; } }
+  .compare-col{ padding:16px 18px; background:var(--surface-alt); }
+  .compare-col:first-child{ border-right:1px solid var(--line); }
+  @media (max-width: 720px){ .compare-col:first-child{ border-right:none; border-bottom:1px solid var(--line); } }
+  .compare-col h4{
+    margin:0 0 10px;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:0.74rem;
+    letter-spacing:0.08em;
+    text-transform:uppercase;
+    color:var(--accent-strong);
+    font-weight:500;
+  }
+  .compare-col.alt h4{ color:var(--accent-2-strong); }
+  .compare-row{ margin-bottom:10px; }
+  .compare-row:last-child{ margin-bottom:0; }
+  .compare-row .k{
+    display:block;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:0.66rem;
+    letter-spacing:0.06em;
+    text-transform:uppercase;
+    color:var(--ink-faint);
+    margin-bottom:2px;
+  }
+  .compare-row .v{ font-size:0.94rem; color:var(--ink-soft); line-height:1.5; }
+
+  /* ---------- EXAMPLE CARDS ---------- */
+  .example-subhead{ font-family:'IBM Plex Mono', monospace; font-size:0.72rem; letter-spacing:0.06em; text-transform:uppercase; color:var(--ink-faint); margin:22px 0 10px; }
+  .example-subhead:first-child{ margin-top:0; }
+  .example-grid{ display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:16px; margin-bottom:8px; }
+  .example-card{ border:1px solid var(--line); background:var(--surface-alt); border-radius:6px; padding:16px 18px; }
+  .example-card .game{ font-family:'Zilla Slab',serif; font-weight:600; font-size:1.05rem; margin-bottom:8px; }
+  .example-card .facets{ display:flex; flex-wrap:wrap; gap:6px; margin-bottom:12px; }
+  .example-card .facets span{
+    font-family:'IBM Plex Mono', monospace; font-size:0.66rem; letter-spacing:0.02em; color:var(--ink-faint);
+    background:var(--surface); border:1px solid var(--line); padding:3px 8px; border-radius:10px; white-space:nowrap;
+  }
+  .example-card .why{ font-size:0.92rem; color:var(--ink-soft); line-height:1.6; }
+  .example-card .why ul{ margin:8px 0 0; padding-left:1.15em; }
+  .example-card .why li{ margin-bottom:6px; }
+  .example-card .why li:last-child{ margin-bottom:0; }
+
+  /* ---------- PIPELINE / TAGS ---------- */
+  .pipeline{ display:flex; flex-wrap:wrap; align-items:center; gap:8px; margin-bottom:8px; }
+  .pipeline:last-child{ margin-bottom:0; }
+  .pipeline-label{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:0.68rem;
+    letter-spacing:0.1em;
+    text-transform:uppercase;
+    color:var(--ink-faint);
+    width:100%;
+    margin-bottom:2px;
+  }
+  .chip{
+    display:inline-block;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:0.72rem;
+    letter-spacing:0.03em;
+    padding:5px 10px;
+    border-radius:10px;
+    border:1px solid var(--line);
+    color:var(--ink-soft);
+    background:var(--surface-alt);
+    white-space:nowrap;
+  }
+  .chip.accent{ border-color:var(--accent); color:var(--accent-strong); background:rgba(190,122,31,0.08); }
+
+  /* ---------- CALLOUT ---------- */
+  .callout{
+    border-left:3px solid var(--accent);
+    background:var(--surface-alt);
+    border-radius:0 4px 4px 0;
+    padding:14px 16px;
+    margin:16px 0 0;
+  }
+  .callout .callout-tag{
+    display:inline-block;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:0.66rem;
+    letter-spacing:0.1em;
+    text-transform:uppercase;
+    color:var(--accent-strong);
+    margin-bottom:8px;
+  }
+  .callout.alt{ border-left-color:var(--accent-2); }
+  .callout.alt .callout-tag{ color:var(--accent-2-strong); }
+  .callout p{ margin:0; }
+
+  /* ---------- NUMBERED / CLOSING LISTS ---------- */
+  .numbered{ list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:12px; }
+  .numbered li{ display:flex; gap:14px; align-items:flex-start; }
+  .numbered .n{ font-family:'IBM Plex Mono', monospace; color:var(--accent-strong); font-size:0.88rem; padding-top:2px; flex:none; }
+  .numbered p{ margin:0; }
+
+  .closing-list{ list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:9px; }
+  .closing-list li{ display:flex; gap:10px; color:var(--ink-soft); }
+  .closing-list li::before{ content:'—'; color:var(--accent-strong); flex:none; }
+
+  .pb-before{ break-before:page; page-break-before:always; }
+
+  /* ---------- TABLES ---------- */
+  .table-wrap{ overflow-x:auto; border:1px solid var(--line); border-radius:6px; }
+  table{ border-collapse:collapse; width:100%; min-width:520px; font-size:0.94rem; }
+  thead th{
+    text-align:left;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:0.7rem;
+    letter-spacing:0.08em;
+    text-transform:uppercase;
+    color:var(--ink-faint);
+    background:var(--surface-alt);
+    padding:10px 14px;
+    border-bottom:1px solid var(--line);
+    white-space:nowrap;
+  }
+  tbody td{
+    padding:10px 14px;
+    border-bottom:1px solid var(--line);
+    vertical-align:top;
+  }
+  tbody tr:last-child td{ border-bottom:none; }
+  tbody tr:nth-child(even){ background:var(--surface); }
+
+  .footnote{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:0.78rem;
+    color:var(--ink-faint);
+    letter-spacing:0.02em;
+    margin-top:16px;
+    padding-top:14px;
+    border-top:1px solid var(--line);
+  }
+
+  footer{
+    margin-top:24px;
+    padding-top:24px;
+    border-top:1px solid var(--line);
+    color:var(--ink-faint);
+    font-size:0.82rem;
+  }
+
+  @media print{
+    :root{ color-scheme:light; }
+    body{ background-image:none; }
+    .page{ max-width:none; padding:0 8px 24px; }
+    .hero{ padding-top:12px; }
+    .layout{ display:block; padding-top:20px; }
+    .toc{ display:none; }
+    a{ color:var(--ink); text-decoration:none; }
+    section{ break-inside:avoid-page; margin-bottom:36px; }
+    .table-wrap{ overflow-x:visible; }
+  }
+</style>
+
+<div class="page">
+
+  <header class="hero">
+    <p class="eyebrow">EARTSUP · Support de cours</p>
+    <h1>Game Design multijoueur — matchmaking, asymétrie, dynamiques émergentes</h1>
+    <p class="lede">Le système qui orchestre les joueurs entre eux, au-delà de l'espace (Level Design) ou de la motivation individuelle (Psychologie/UX) déjà traités ailleurs : pourquoi on affronte la difficulté à plusieurs, comment on classe les joueurs, comment on désigne les forces en présence, et comment le design absorbe les dérapages sociaux.</p>
+    <div class="stat-strip">
+      <div class="stat"><span class="label">Format</span><span class="value">Support autonome, session unique</span></div>
+      <div class="stat"><span class="label">Durée indicative</span><span class="value">~4h45 (8 blocs + synthèse)</span></div>
+      <div class="stat"><span class="label">Angle</span><span class="value">Le système multijoueur, pas l'espace ni la motivation individuelle</span></div>
+      <div class="stat"><span class="label">Études de cas</span><span class="value">6 jeux solo transposés (bloc 7)</span></div>
+    </div>
+  </header>
+
+  <div class="layout">
+    <nav class="toc" id="toc">
+      <span class="toc-title">Sommaire</span>
+      <a href="#taxonomie">0 · Taxonomie <span class="toc-dur">40'</span></a>
+      <a href="#plateau">1 · Parallèle plateau <span class="toc-dur">30'</span></a>
+      <a href="#exploiter">2 · Exploiter le jeu <span class="toc-dur">25'</span></a>
+      <a href="#leviers">3 · Les leviers <span class="toc-dur">30'</span></a>
+      <a href="#matchmaking">4 · Matchmaking <span class="toc-dur">38'</span></a>
+      <a href="#asymetrie">5 · Asymétrie &amp; méta <span class="toc-dur">35'</span></a>
+      <a href="#social">6 · Le social dans le multi <span class="toc-dur">50'</span></a>
+      <a href="#etudes-de-cas">7 · Étude de cas <span class="toc-dur">35'</span></a>
+      <a href="#cloture">Synthèse <span class="toc-dur">12'</span></a>
+    </nav>
+
+    <main>
+
+      <section id="taxonomie">
+        <span class="section-dur">~40 min</span>
+        <h2>Taxonomie : pourquoi le joueur se confronte à la difficulté</h2>
+        <p class="section-sub">Avant de parler de systèmes, il faut poser ce que le joueur vient chercher — ça change selon qu'il est seul, accompagné, confronté à une adversité, ou simplement en train de socialiser.</p>
+
+        <div class="col-grid col-grid--2">
+          <div class="mini-card">
+            <h4>Solo</h4>
+            <ul>
+              <li>Le joueur n'est pas là pour gagner ou perdre au sens strict, mais pour s'exprimer et s'accomplir — Dark Souls et Sim City partagent cette même logique malgré des genres opposés.</li>
+              <li>Il doit comprendre le challenge et ses enjeux pour ressentir une vraie satisfaction une fois l'obstacle surmonté.</li>
+              <li>Le jeu introduit le challenge, outille le joueur pour l'accompagner, puis le récompense ou le félicite quand il est surmonté.</li>
+              <li>Les erreurs de l'IA sont fausses — elle triche en interne — donc l'exploiter est normal et ne pose aucun problème éthique.</li>
+            </ul>
+          </div>
+          <div class="mini-card">
+            <h4>Coop</h4>
+            <ul>
+              <li>Le joueur cherche toujours à s'exprimer, mais tourné vers une relation sociale humaine réelle — ce n'est pas la même chose qu'avec des bots, même parfaits.</li>
+              <li>Le jeu est centré sur le groupe, pas sur l'accomplissement personnel de chacun.</li>
+              <li>La difficulté et les challenges restent proches de l'expérience solo — même logique d'outillage et de récompense, simplement vécue à plusieurs.</li>
+              <li><strong>Distinction clé</strong> avec « social avant tout » (ci-dessous) : le coop reste orienté vers un objectif commun explicite.</li>
+            </ul>
+          </div>
+          <div class="mini-card">
+            <h4>Adversité (compétitif élargi)</h4>
+            <ul>
+              <li>Le joueur cherche toujours à s'exprimer, mais pour d'autres raisons : rencontrer une adversité non-IA, donc « normale » et « légitime », et se situer par rapport aux autres.</li>
+              <li>Les erreurs humaines sont exploitables sans complexe — contrairement à celles de l'IA, elles sont « vraies ».</li>
+              <li>Désir de domination, de puissance.</li>
+              <li><strong>Nuance à expliciter</strong> : l'adversité n'implique pas toujours un vainqueur/perdant formel — on peut se mesurer aux autres sans confrontation directe ni écran de défaite.</li>
+            </ul>
+          </div>
+          <div class="mini-card">
+            <h4>Le social avant tout <span class="chip accent" style="margin-left:6px;">nouvelle catégorie</span></h4>
+            <ul>
+              <li>Victoire et défaite deviennent secondaires — ce qui compte, c'est l'interaction et l'échange entre joueurs.</li>
+              <li>Distinct du coop : pas d'objectif commun imposé par le système, juste la présence partagée.</li>
+              <li>Le jeu agit comme un prétexte ou un décor à la socialisation plus que comme un système à vaincre.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="callout">
+          <span class="callout-tag">À retenir</span>
+          <p>Un même jeu peut traverser plusieurs catégories selon le mode ou le moment : World of Warcraft est coop en raid, adversité en arène PvP, et « social avant tout » dans ses hubs de guilde — la taxonomie décrit des usages, pas des jeux entiers.</p>
+        </div>
+
+        <div class="example-subhead">Adversité</div>
+        <div class="example-grid">
+          <div class="example-card"><div class="game">Fortnite</div><div class="facets"><span>Epic Games</span><span>PC/Console/Mobile</span><span>Battle royale</span><span>AAA</span><span>Dernier survivant</span></div><div class="why">Vainqueur/perdant formel et immédiat — le cas le plus net d'adversité compétitive.</div></div>
+          <div class="example-card"><div class="game">Marvel Snap</div><div class="facets"><span>Second Dinner</span><span>Mobile/PC</span><span>Deckbuilder compétitif</span><span>Indé → AA</span><span>Parties ultra-courtes</span></div><div class="why">Adversité condensée en 3 minutes, classement et ranked ladder.</div></div>
+          <div class="example-card"><div class="game">Clash of Clans</div><div class="facets"><span>Supercell</span><span>Mobile</span><span>Stratégie asynchrone</span><span>AAA mobile</span><span>Attaque asynchrone</span></div><div class="why">Adversité sans présence simultanée — on attaque une base laissée par un joueur absent.</div></div>
+          <div class="example-card"><div class="game">TrackMania</div><div class="facets"><span>Nadeo</span><span>PC</span><span>Course arcade</span><span>AA</span><span>Fantômes &amp; classements</span></div><div class="why">Illustre la nuance : on bat un temps, pas un adversaire présent — adversité sans vainqueur formel au sens classique.</div></div>
+        </div>
+
+        <div class="example-subhead">Coop</div>
+        <div class="example-grid">
+          <div class="example-card"><div class="game">World of Warcraft (raids)</div><div class="facets"><span>Blizzard Entertainment</span><span>PC</span><span>MMORPG</span><span>AAA (&gt;20 ans)</span><span>Objectif commun scénarisé</span></div><div class="why">Référence citée par l'utilisateur — le coop structuré par excellence, difficulté calibrée pour un groupe.</div></div>
+          <div class="example-card"><div class="game">Don't Starve Together</div><div class="facets"><span>Klei Entertainment</span><span>PC/Console</span><span>Survie coop</span><span>Indé (studio établi)</span><span>Vue isométrique dessinée</span></div><div class="why">Survie partagée où chaque joueur dépend des autres pour la nourriture et la défense collective.</div></div>
+          <div class="example-card"><div class="game">Astroneer</div><div class="facets"><span>System Era Softworks</span><span>PC/Console</span><span>Exploration-construction</span><span>Indé (petite équipe)</span><span>Vue 3e personne colorée</span></div><div class="why">Objectif commun de construction/exploration, aucune compétition interne entre joueurs.</div></div>
+          <div class="example-card"><div class="game">Valheim</div><div class="facets"><span>Iron Gate AB</span><span>PC/Console</span><span>Survie viking</span><span>Indé (très petite équipe)</span><span>Vue 3e personne</span></div><div class="why">Progression de biome en biome partagée par tout le groupe — même rythme de difficulté qu'en solo, à plusieurs.</div></div>
+        </div>
+
+        <div class="example-subhead">Hybride</div>
+        <div class="example-grid">
+          <div class="example-card"><div class="game">Rainbow Six Siege</div><div class="facets"><span>Ubisoft Montreal</span><span>PC/Console</span><span>Tactical shooter</span><span>AAA</span><span>Ranked PvP + PvE Outbreak</span></div><div class="why">Référence citée par l'utilisateur — adversité ranked au cœur du jeu, mode coop PvE (Outbreak, événements) en parallèle.</div></div>
+        </div>
+
+        <div class="example-subhead">Le social avant tout</div>
+        <div class="example-grid">
+          <div class="example-card"><div class="game">VRChat</div><div class="facets"><span>VRChat Inc.</span><span>PC/VR</span><span>Plateforme sociale</span><span>Indé → AA</span><span>Avatars &amp; bac à sable</span></div><div class="why">Bac à sable social pur — aucun objectif, l'interaction est la totalité du jeu.</div></div>
+          <div class="example-card"><div class="game">Animal Crossing: New Horizons</div><div class="facets"><span>Nintendo EPD</span><span>Console</span><span>Simulation de vie</span><span>AAA</span><span>Visite &amp; décoration</span></div><div class="why">Visiter l'île d'un ami pour échanger et se montrer son travail — zéro score, zéro victoire.</div></div>
+          <div class="example-card"><div class="game">Minecraft (mode créatif multi)</div><div class="facets"><span>Mojang Studios</span><span>PC/Console/Mobile</span><span>Bac à sable</span><span>AAA</span><span>Construction libre</span></div><div class="why">À distinguer du mode survie (coop, objectif commun implicite) : en créatif, construire ensemble sans but imposé.</div></div>
+        </div>
+      </section>
+
+      <section id="plateau">
+        <span class="section-dur">~30 min</span>
+        <h2>Parallèle jeux de plateau</h2>
+        <p class="section-sub">La même taxonomie, rejouée sur un médium plus ancien et plus contraint — utile pour voir ce que le numérique a résolu ou simplement masqué.</p>
+
+        <div class="mini-card">
+          <h4>Course aux points sans interaction — encore un « jeu de société » ?</h4>
+          <ul>
+            <li>Dans un point-salad (Ticket to Ride, Azul), chaque joueur optimise sa propre zone de jeu avec très peu d'interaction directe avec les autres — est-ce encore social, ou une collection de solitaires autour d'une même table ?</li>
+            <li>Les parties asynchrones (jeu par correspondance historique, apps mobiles tour par tour) poussent la question plus loin : le lien social existe-t-il encore si les tours sont espacés de plusieurs heures ou plusieurs jours ?</li>
+            <li>Et les jeux de plateau solo (Friday, Spirit Island en mode solo) : un jeu de plateau reste-t-il « social » par essence du médium — une table, une présence physique — même sans la moindre interaction ludique ?</li>
+          </ul>
+        </div>
+
+        <div class="mini-card" style="margin-top:14px;">
+          <h4>L'adversité directe est rare au plateau — et souvent mal vue</h4>
+          <ul>
+            <li>Attaquer frontalement un autre joueur (lui voler une ressource, détruire sa construction) crée une tension sociale directe à la table, que beaucoup de jeux évitent soigneusement.</li>
+            <li>Ce sont souvent les jeux les plus simples et les plus populaires qui l'assument pleinement — à condition que le hasard ou le chaos dilue la responsabilité individuelle de l'attaque.</li>
+          </ul>
+        </div>
+
+        <div class="example-subhead">Confrontation directe assumée, cadrée par l'aléatoire</div>
+        <div class="example-grid">
+          <div class="example-card"><div class="game">Risk</div><div class="facets"><span>Hasbro</span><span>Jeu de plateau</span><span>Conquête territoriale</span><span>Scope classique</span></div><div class="why">Confrontation frontale tolérée car enrobée de jets de dés — personne n'est « vraiment » responsable d'une mauvaise série.</div></div>
+          <div class="example-card"><div class="game">Catan</div><div class="facets"><span>Catan GmbH</span><span>Jeu de plateau</span><span>Négociation &amp; construction</span><span>Scope familial</span></div><div class="why">Vol et blocage (voleur, routes coupées) acceptés car le hasard du dé 7 dilue la part de malice du joueur.</div></div>
+          <div class="example-card"><div class="game">Mario Party</div><div class="facets"><span>Nintendo</span><span>Console</span><span>Party game / minijeux</span><span>AAA</span><span>Chaos cadré</span></div><div class="why">Confrontation directe (voler des étoiles, saboter) assumée car diluée dans un format court et volontairement chaotique.</div></div>
+        </div>
+
+        <div class="example-subhead">Jeux de plateau solo / asynchrones — cas-limites de la question</div>
+        <div class="example-grid">
+          <div class="example-card"><div class="game">Friday</div><div class="facets"><span>Rio Grande Games</span><span>Jeu de plateau solo</span><span>Deckbuilder</span><span>Scope court</span></div><div class="why">Un jeu de plateau pensé pour un seul joueur — interroge la définition même de « jeu de société ».</div></div>
+          <div class="example-card"><div class="game">Spirit Island (mode solo)</div><div class="facets"><span>Greater Than Games</span><span>Jeu de plateau (solo possible)</span><span>Coopératif asymétrique</span><span>Scope expert</span></div><div class="why">Conçu coop mais jouable seul en gérant plusieurs esprits — la frontière solo/coop devient floue.</div></div>
+        </div>
+
+        <div class="callout">
+          <span class="callout-tag">Contraintes propres au plateau</span>
+          <p><strong>Égalité de temps de jeu</strong> — chaque joueur doit avoir son tour, une contrainte presque absente en jeu vidéo temps réel où tout le monde agit en continu. <strong>Absence de frustration</strong> — un joueur éliminé à la 10<sup>e</sup> minute d'une partie de 90 minutes, condamné à regarder les autres jouer, est un échec de design que le plateau prend très au sérieux. <strong>Égalité stricte des chances</strong> — setup symétrique, compensation du premier joueur par un bonus de départ (règle du « catch-up » dans Catan ou Ticket to Ride).</p>
+        </div>
+      </section>
+
+      <section id="exploiter">
+        <span class="section-dur">~25 min</span>
+        <h2>Exploiter le jeu : IA qui triche vs humain qu'on exploite</h2>
+        <p class="section-sub">Retour direct sur la taxonomie du bloc 0 — la tension entre « l'IA triche, il est normal de l'exploiter » (solo) et « les erreurs humaines sont exploitables sans complexe » (adversité) n'est pas la même tension.</p>
+
+        <div class="callout">
+          <span class="callout-tag">Question structurante</span>
+          <p>Qu'est-ce qu'on veut que le joueur cherche à exprimer ? Et qu'est-ce que ça signifie, le multijoueur, dans chacun des quatre cas du bloc 0 ?</p>
+        </div>
+
+        <div class="col-grid col-grid--2" style="margin-top:16px;">
+          <div class="mini-card">
+            <h4>Solo</h4>
+            <p>Exploiter une faille d'IA est neutre, presque attendu — l'IA « triche » déjà en interne (vision parfaite, aim-assist caché, règles asymétriques), donc retourner le rapport de force ne pose aucun problème éthique.</p>
+          </div>
+          <div class="mini-card">
+            <h4>Coop</h4>
+            <p>« Exploiter » le jeu devient une complicité positive entre joueurs — trouver ensemble un raccourci ou un combo n'est pas une triche, c'est une expression collective de maîtrise.</p>
+          </div>
+          <div class="mini-card">
+            <h4>Adversité</h4>
+            <p>Zone grise : exploiter l'erreur d'un adversaire humain est une stratégie légitime (c'est même le but), mais exploiter une faille du <em>jeu lui-même</em> contre un humain (bug, glitch) est perçu très différemment — la frontière stratégie optimale / triche se déplace selon qu'on exploite l'adversaire ou le système.</p>
+          </div>
+          <div class="mini-card">
+            <h4>Social avant tout</h4>
+            <p>La notion d'exploit perd presque son sens, puisqu'il n'y a pas d'enjeu de score. Le seul « exploit » possible serait de nuire au lien social lui-même (troll, harcèlement) — ce qui rejoint directement le bloc 6.</p>
+          </div>
+        </div>
+
+        <div class="callout alt" style="margin-top:16px;">
+          <span class="callout-tag">Débat court</span>
+          <p>Où se situe la ligne, côté humain, entre « stratégie optimale » et « exploit » ? Un joueur qui abuse d'un angle mort de hitbox, d'un timing d'i-frame non documenté, ou d'une mécanique de netcode (desync abuse) — triche-t-il, ou joue-t-il simplement mieux que les règles écrites ?</p>
+        </div>
+      </section>
+
+      <section id="leviers">
+        <span class="section-dur">~30 min</span>
+        <h2>Les leviers qui séparent les joueurs</h2>
+        <p class="section-sub">Avant de parler de matchmaking (bloc suivant), il faut nommer précisément ce qui crée un écart entre deux joueurs — ce ne sont pas tous les mêmes leviers, et ils ne se corrigent pas de la même façon.</p>
+
+        <div class="col-grid col-grid--3">
+          <div class="mini-card">
+            <h4>Le skill</h4>
+            <p>L'écart vient de la maîtrise mécanique et décisionnelle du joueur lui-même — c'est le seul levier qu'un système de classement peut mesurer directement.</p>
+          </div>
+          <div class="mini-card">
+            <h4>Le leveling / la progression</h4>
+            <p>L'écart vient du temps déjà investi dans le jeu — des stats, un niveau ou un équipement supérieurs, indépendamment du skill au moment T.</p>
+          </div>
+          <div class="mini-card">
+            <h4>Le pay-to-win</h4>
+            <p>L'écart vient d'un achat réel — le joueur contourne le temps ou le skill en payant directement un avantage mécanique.</p>
+          </div>
+        </div>
+
+        <div class="example-subhead">Skill</div>
+        <div class="example-grid">
+          <div class="example-card"><div class="game">League of Legends</div><div class="facets"><span>Riot Games</span><span>PC</span><span>MOBA</span><span>AAA</span><span>Classement par ligue</span></div><div class="why">Référence citée par l'utilisateur — le skill individuel et d'équipe est le levier dominant du classement.</div></div>
+          <div class="example-card"><div class="game">Overwatch 2</div><div class="facets"><span>Blizzard Entertainment</span><span>PC/Console</span><span>Hero shooter</span><span>AAA</span><span>Rangs compétitifs</span></div><div class="why">Référence citée par l'utilisateur — rangs par rôle, le skill prime sur la progression de compte.</div></div>
+        </div>
+
+        <div class="example-subhead">Leveling / progression</div>
+        <div class="example-grid">
+          <div class="example-card"><div class="game">Dead by Daylight</div><div class="facets"><span>Behaviour Interactive</span><span>PC/Console</span><span>Horreur asymétrique 4v1</span><span>AA</span><span>Prestige &amp; bloodweb</span></div><div class="why">Référence citée par l'utilisateur — perks débloqués par la progression créent un vrai écart de boîte à outils, pas seulement de skill.</div></div>
+          <div class="example-card"><div class="game">Dark Souls (invasions)</div><div class="facets"><span>FromSoftware</span><span>PC/Console</span><span>Action-RPG</span><span>AAA</span><span>Invasions PvP par niveau</span></div><div class="why">Référence citée par l'utilisateur — un joueur haut niveau peut envahir un monde de joueur faible niveau, écart de progression brut.</div></div>
+        </div>
+
+        <div class="example-subhead">Pay-to-win</div>
+        <div class="example-grid">
+          <div class="example-card"><div class="game">Clash Royale</div><div class="facets"><span>Supercell</span><span>Mobile</span><span>Stratégie de cartes</span><span>AAA mobile</span><span>Coffres &amp; achats</span></div><div class="why">Référence citée par l'utilisateur — cartes améliorées plus vite via achat, écart direct lié à l'argent dépensé.</div></div>
+          <div class="example-card"><div class="game">Star Wars Battlefront II</div><div class="facets"><span>DICE / EA</span><span>PC/Console</span><span>FPS</span><span>AAA</span><span>Star Cards</span></div><div class="why">Référence citée par l'utilisateur — controverse majeure de 2017 sur les loot boxes payantes donnant un avantage mécanique.</div></div>
+          <div class="example-card"><div class="game">Hearthstone</div><div class="facets"><span>Blizzard Entertainment</span><span>PC/Mobile</span><span>Jeu de cartes</span><span>AAA</span><span>Packs de cartes</span></div><div class="why">Référence citée par l'utilisateur — collection de cartes accélérée par l'achat de packs.</div></div>
+        </div>
+
+        <div class="callout">
+          <span class="callout-tag">Question ouverte aux élèves</span>
+          <p>Quels autres leviers séparent deux joueurs ? Pistes de relance si rien ne sort : le <strong>temps/grind investi</strong> (distinct du pay-to-win — contourner le temps vs le payer), la <strong>coordination sociale</strong> (squad organisée en vocal vs solo queue, même skill individuel), la <strong>connaissance méta</strong> (joueur qui connaît les matchups/timings vs mécaniquement égal mais moins informé), le <strong>loot de session</strong> (looter shooters type Destiny 2 ou Diablo, où la puissance vient du drop pendant la partie, pas d'un palier permanent).</p>
+        </div>
+      </section>
+
+      <section id="matchmaking">
+        <span class="section-dur">~38 min</span>
+        <h2>Matchmaking : la réponse structurelle</h2>
+        <p class="section-sub">Le matchmaking ne corrige qu'un seul des leviers du bloc précédent — le skill mesuré. Tout l'enjeu de ce bloc est de comprendre comment, et ce qu'il laisse volontairement de côté.</p>
+
+        <div class="col-grid col-grid--3">
+          <div class="mini-card">
+            <h4>Systèmes de classement</h4>
+            <ul>
+              <li><strong>Elo</strong> — rating historique des échecs, simple et robuste pour du 1v1.</li>
+              <li><strong>Glicko / Glicko-2</strong> — ajoute une incertitude au rating (un joueur qui vient de commencer a un rating « flou » qui se stabilise avec les parties).</li>
+              <li><strong>TrueSkill</strong> (Microsoft) — gère nativement les équipes et les jeux à plus de deux joueurs, là où Elo peine.</li>
+            </ul>
+          </div>
+          <div class="mini-card">
+            <h4>Le débat SBMM</h4>
+            <ul>
+              <li>Skill-Based Matchmaking — matcher les joueurs par niveau mesuré plutôt qu'au hasard.</li>
+              <li>Controverse récurrente côté Call of Duty : une partie des joueurs veut pouvoir « souffler » dans des lobbies plus faciles, contre l'intégrité compétitive défendue par les devs et les joueurs assidus.</li>
+              <li>Le SBMM strict peut aussi produire des sessions plus courtes et plus intenses — pas forcément plus agréables pour tout le monde.</li>
+            </ul>
+          </div>
+          <div class="mini-card">
+            <h4>Queue design</h4>
+            <ul>
+              <li>Solo queue vs duo/squad queue — un joueur seul affronte-t-il des groupes coordonnés ?</li>
+              <li>Role queue (League of Legends) — on matche aussi sur le rôle choisi, pas que sur le rating global.</li>
+              <li>Placement games et hidden MMR vs rang visible — le rating réel peut différer du rang affiché publiquement.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="callout">
+          <span class="callout-tag">Trade-off</span>
+          <p>Qualité du match vs temps d'attente : un matchmaking « parfait » qui cherche l'adversaire idéal peut faire exploser les files d'attente — un jeu avec peu de joueurs en ligne doit élargir la fourchette de skill acceptée au fil des secondes, au prix de matchs moins équilibrés.</p>
+        </div>
+
+        <div class="callout alt">
+          <span class="callout-tag">Le cas du nouveau joueur</span>
+          <p>C'est ici que se joue la « jungle » du débutant face au maintien de l'excellence en haut niveau : les placement games cherchent à positionner vite un nouveau joueur au bon niveau, mais le matchmaking ne corrige que le skill qu'il arrive à mesurer — pas la coordination sociale d'une squad adverse organisée, pas le pay-to-win, pas la connaissance méta. Un débutant parfaitement « bien classé » peut quand même se sentir perdu face à des leviers que le système ne voit pas.</p>
+        </div>
+
+        <div class="example-subhead">Exemples</div>
+        <div class="example-grid">
+          <div class="example-card"><div class="game">Apex Legends</div><div class="facets"><span>Respawn Entertainment / EA</span><span>PC/Console</span><span>Battle royale</span><span>AAA</span><span>CWMM continu</span></div><div class="why">Continuous Window Matchmaking — le MMR se met à jour en continu pendant la partie, pas seulement entre deux matchs.</div></div>
+          <div class="example-card"><div class="game">League of Legends</div><div class="facets"><span>Riot Games</span><span>PC</span><span>MOBA</span><span>AAA</span><span>Role queue, seeding 2024</span></div><div class="why">Seeding affiné en 2024 pour mieux placer les nouveaux comptes dès les premières parties classées.</div></div>
+          <div class="example-card"><div class="game">Chess.com</div><div class="facets"><span>Chess.com</span><span>PC/Mobile</span><span>Échecs en ligne</span><span>Plateforme</span><span>Glicko-2</span></div><div class="why">Référence académique du Glicko-2 en conditions réelles, à très grande échelle.</div></div>
+          <div class="example-card"><div class="game">CS2 (Premier)</div><div class="facets"><span>Valve</span><span>PC</span><span>Tactical shooter</span><span>AAA</span><span>Premier rating</span></div><div class="why">Mode ranked dédié avec son propre système de rating, distinct du Matchmaking compétitif classique.</div></div>
+        </div>
+      </section>
+
+      <section id="asymetrie">
+        <span class="section-dur">~35 min</span>
+        <h2>Asymétrie / méta / équilibrage : les outils pour faire vivre les jeux multi compétitif</h2>
+        <p class="section-sub">De l'asymétrie figée entre deux rôles à l'asymétrie qui bouge dans le temps, patch après patch.</p>
+
+        <div class="compare">
+          <div class="compare-col">
+            <h4>Dead by Daylight</h4>
+            <div class="compare-row"><span class="k">Asymétrie</span><span class="v">Objectifs opposés (tuer vs s'échapper), mais capacités de base relativement proches entre survivants.</span></div>
+            <div class="compare-row"><span class="k">Résultat</span><span class="v">A survécu et prospéré commercialement plus de 8 ans.</span></div>
+          </div>
+          <div class="compare-col alt">
+            <h4>Evolve</h4>
+            <div class="compare-row"><span class="k">Asymétrie</span><span class="v">Pouvoir radicalement différent entre chasseurs et monstre — toute capacité forte d'un côté devait être annulée côté adverse.</span></div>
+            <div class="compare-row"><span class="k">Résultat</span><span class="v">Turtle Rock Studios n'a jamais réussi à stabiliser l'équilibre ; le jeu s'est effondré commercialement.</span></div>
+          </div>
+        </div>
+
+        <div class="callout">
+          <span class="callout-tag">Leçon</span>
+          <p>Un pouvoir trop différent entre deux rôles asymétriques est presque impossible à équilibrer durablement ; des objectifs différents avec des capacités proches se tiennent beaucoup mieux dans la durée.</p>
+        </div>
+
+        <div class="mini-card" style="margin-top:20px;">
+          <h4>Le patch comme outil de vie du jeu, pas seulement d'équité</h4>
+          <ul>
+            <li>Équilibrer les mécaniques entre elles pour égaliser les chances est l'objectif « officiel » d'un patch de balance — mais ce n'est pas le seul.</li>
+            <li>Un patch peut aussi déséquilibrer volontairement un système ou un personnage pour faire bouger la méta : relancer l'intérêt, forcer la communauté à réexplorer des stratégies délaissées, créer un événement autour de la sortie du patch.</li>
+            <li>League of Legends et Overwatch publient des cycles de patchs réguliers où certains nerfs/buffs ne corrigent pas une vraie injustice statistique, mais cherchent à déplacer l'usage (rendre un personnage boudé de nouveau jouable, casser un pick rate à 90 % qui ennuie tout le monde).</li>
+            <li>Un jeu-service dont la méta ne bouge jamais meurt de monotonie, même parfaitement équilibré sur le papier — le déséquilibre volontaire et temporaire est parfois un choix de design sain.</li>
+          </ul>
+        </div>
+      </section>
+
+      <section id="social">
+        <span class="section-dur">~50 min</span>
+        <h2>Le social dans le multi : Fair-play, émergence, liberté de comportement</h2>
+        <p class="section-sub">Un système multijoueur est un système social, pas qu'un système mécanique — ce bloc regroupe tout ce qui échappe au design pur des règles.</p>
+
+        <div class="callout">
+          <span class="callout-tag">Cadrage d'ouverture</span>
+          <p>Dans un jeu solo, rien ne sanctionne les comportements hors propos ou condamnables — on peut insulter l'écran, abandonner en plein milieu, tricher ouvertement, ça ne regarde que soi. En multijoueur, la liberté du joueur s'arrête là où commence celle des autres : c'est la bascule qui justifie à elle seule l'existence de tout ce bloc.</p>
+        </div>
+
+        <div class="callout alt">
+          <span class="callout-tag">Des populations, pas des « mauvais joueurs »</span>
+          <p>Les différences sociales, éducationnelles et géographiques entre joueurs sont un facteur de conception à part entière — pas juste un problème de comportement individuel. Un lobby mondial fait se rencontrer des normes culturelles de politesse différentes, des niveaux de maîtrise de la langue commune différents, des habitudes de communication différentes (vocal, texte, pings). Concevoir le fair-play, c'est concevoir pour des populations qui se rencontrent, pas corriger des individus isolés.</p>
+        </div>
+
+        <h3 style="margin-top:28px; font-size:1.1rem;">Dynamiques émergentes de groupe</h3>
+        <div class="stack-cards" style="margin-top:12px;">
+          <div class="mini-card">
+            <h4>Émergence sociale libre — EVE Online</h4>
+            <p>Les joueurs s'organisent en alliances pouvant atteindre plusieurs milliers de membres, pratiquent l'espionnage, la trahison organisée, et bâtissent une économie de guerre entière — le jeu ne scripte rien de tout ça, il fournit seulement les outils (territoire, ressources, communication) et laisse l'émergence faire le reste. CCP documente lui-même ces dynamiques dans ses rapports économiques trimestriels/mensuels (déjà vus dans le cours Economic Designer).</p>
+          </div>
+          <div class="mini-card">
+            <h4>Pactes fragiles — Rust / DayZ</h4>
+            <p>Alliances de raid temporaires qui se trahissent dès que l'intérêt économique bascule — la confiance entre joueurs devient elle-même une ressource rare et volatile, au cœur de l'expérience plutôt qu'un simple à-côté social.</p>
+          </div>
+          <div class="mini-card">
+            <h4>Émergence forcée par la contrainte — Battle royale</h4>
+            <p>Le cercle qui rétrécit ne « raconte » rien en soi — il force mécaniquement les rencontres et donc l'émergence de tensions sociales : trêves temporaires entre groupes rivaux, troisième partie qui profite d'un duel déjà engagé. L'émergence ici est entièrement designée par la contrainte spatiale, pas laissée libre comme dans EVE Online.</p>
+          </div>
+          <div class="mini-card">
+            <h4>Contre-émergence designée — comeback mechanics</h4>
+            <p>L'item bleu de Mario Kart, le rubber-banding : des mécaniques qui cassent volontairement le snowballing (l'avantage qui s'auto-renforce) pour maintenir une tension sociale saine jusqu'à la fin de partie plutôt que de laisser le leader écraser le reste du groupe sans discussion possible.</p>
+          </div>
+        </div>
+
+        <h3 style="margin-top:28px; font-size:1.1rem;">Fair-play et comportement</h3>
+        <div class="stack-cards" style="margin-top:12px;">
+          <div class="mini-card">
+            <h4>Punitif vs incitatif</h4>
+            <p>Le <strong>Honor System</strong> de League of Legends a remplacé l'ancien <strong>Tribunal</strong> communautaire (un système de jugement par les pairs, abandonné car trop lourd et trop lent) ; l'<strong>Endorsement System</strong> d'Overwatch va plus loin en récompensant directement le comportement positif (cosmétiques, loot) plutôt que de seulement punir le négatif — un changement de philosophie, de la sanction vers l'incitation.</p>
+          </div>
+          <div class="mini-card">
+            <h4>Le vote de reddition (surrender)</h4>
+            <p>Permettre à une équipe de voter l'abandon d'une partie déjà perdue réduit le temps passé à ruminer une défaite actée — beaucoup de la frustration en jeu compétitif vient moins de perdre que d'être forcé de rester dans une défaite qui dure.</p>
+          </div>
+          <div class="mini-card">
+            <h4>Smurfing — callback direct au bloc 4</h4>
+            <p>Un joueur expérimenté qui crée un compte neuf pour écraser des débutants casse le matchmaking de l'intérieur — effet pervers direct du système de classement, qui nourrit la toxicité perçue des lobbies de bas niveau.</p>
+          </div>
+          <div class="mini-card">
+            <h4>Design mécanique plutôt que modération — les pings d'Apex Legends</h4>
+            <p>Un système de communication non-verbale riche (marquer une position, une arme, une menace) réduit le besoin même de parler au micro — moins d'occasions de toxicité vocale, par la conception du système plutôt que par la sanction après coup.</p>
+          </div>
+        </div>
+
+        <div class="mini-card" style="margin-top:20px;">
+          <h4>Satisfaction et envie de continuer même dans la défaite</h4>
+          <p>Un système multijoueur sain ne cherche pas seulement à équilibrer les chances de gagner — il cherche à équilibrer l'expérience elle-même, pour qu'une défaite reste supportable et donne envie de relancer une partie plutôt que de fermer le jeu. Le surrender, l'endorsement, les comeback mechanics et même un bon matchmaking convergent tous vers cet unique objectif : garder le joueur engagé, y compris quand ça se passe mal.</p>
+        </div>
+
+        <div class="callout">
+          <span class="callout-tag">Question ouverte de clôture</span>
+          <p>Jusqu'où le design peut-il vraiment résoudre un problème social ? Où commence la responsabilité de la modération humaine, que ni les pings, ni l'endorsement, ni le surrender ne peuvent remplacer entièrement ?</p>
+        </div>
+      </section>
+
+      <section id="etudes-de-cas">
+        <span class="section-dur">~35 min</span>
+        <h2>Étude de cas : transposer un jeu solo en multijoueur</h2>
+        <p class="section-sub">Six jeux solo à la boucle de gameplay très identifiable, du précédent réel au contre-exemple volontairement provocateur — pour chacun, qu'est-ce que la transposition en multijoueur change, révèle ou casse ?</p>
+
+        <div class="example-grid">
+          <div class="example-card">
+            <div class="game">Dark Souls</div>
+            <div class="facets"><span>FromSoftware</span><span>PC/Console</span><span>Action-RPG</span><span>AAA</span><span>Invasions asymétriques</span></div>
+            <div class="why">Précédent réel : le système d'invasions/de fantômes préserve la solitude perçue du joueur tout en injectant une adversité ponctuelle — relie directement le bloc 0 (adversité) et le bloc 5 (asymétrie de rôle). Bon cas d'entrée, le plus proche d'une transposition « douce ».</div>
+          </div>
+          <div class="example-card">
+            <div class="game">The Last of Us</div>
+            <div class="facets"><span>Naughty Dog</span><span>PC/Console</span><span>Action-aventure narratif</span><span>AAA</span><span>Factions, mode multijoueur dérivé</span></div>
+            <div class="why">Précédent réel : le mode Factions, dérivé du jeu narratif solo, montre que le ton et l'intensité doivent être entièrement recalibrés pour le multi — la boucle combat/furtivité survit, la narration solo disparaît presque totalement.</div>
+          </div>
+          <div class="example-card">
+            <div class="game">Stardew Valley</div>
+            <div class="facets"><span>ConcernedApe</span><span>PC/Console/Mobile</span><span>Simulation de vie</span><span>Solo dev</span><span>Coop ajouté post-lancement</span></div>
+            <div class="why">Précédent réel : le coop ajouté après la sortie oblige à renégocier l'économie et le rythme — plusieurs joueurs partagent la même ferme, le même temps qui passe, les mêmes ressources limitées.</div>
+          </div>
+          <div class="example-card">
+            <div class="game">Portal</div>
+            <div class="facets"><span>Valve</span><span>PC/Console</span><span>Puzzle-FPS</span><span>AAA</span><span>Coop dans la suite (Portal 2)</span></div>
+            <div class="why">Précédent réel indirect : le jeu original est pensé pour l'isolement (la voix de GLaDOS repose sur la solitude du joueur), sa suite est pensée dès le départ pour deux — la transposition exige parfois une refonte totale plutôt qu'un simple ajout.</div>
+          </div>
+          <div class="example-card">
+            <div class="game">Outer Wilds</div>
+            <div class="facets"><span>Mobius Digital</span><span>PC/Console</span><span>Exploration-mystère</span><span>Indé</span><span>Boucle de découverte (hypothétique)</span></div>
+            <div class="why">Cas volontairement sans précédent : la boucle repose sur la découverte de connaissance par le joueur lui-même (mystère, temporalité). Un multijoueur casserait le cœur du jeu — un joueur plus avancé « spoile » instantanément l'autre. Excellent contre-exemple : certains jeux ne sont simplement pas faits pour être transposés.</div>
+          </div>
+          <div class="example-card">
+            <div class="game">Journey</div>
+            <div class="facets"><span>thatgamecompany</span><span>PC/Console</span><span>Exploration poétique</span><span>Indé</span><span>Multijoueur anonyme caché</span></div>
+            <div class="why">Twist de clôture : déjà secrètement multijoueur sous une apparence solo (rencontres anonymes, aucun objectif commun formel) — reboucle l'exercice sur la catégorie « le social avant tout » du bloc 0.</div>
+          </div>
+        </div>
+      </section>
+
+      <section id="cloture">
+        <span class="section-dur">~12 min</span>
+        <h2>Synthèse</h2>
+        <p class="section-sub">Fil rouge : Dead by Daylight, qui touche presque chaque bloc du cours.</p>
+
+        <div class="callout">
+          <span class="callout-tag">Fil rouge</span>
+          <p>Adversité/coop asymétrique (bloc 0 et 5) → leveling comme levier d'écart entre joueurs (bloc 3) → matchmaking qui ne corrige que le skill mesuré (bloc 4) → patch de balance qui fait vivre la méta killer/survivants (bloc 5) → fair-play côté killer, souvent pointé du doigt en premier dans les dérapages de comportement (bloc 6). Un seul jeu, presque tous les blocs.</p>
+        </div>
+
+        <ul class="closing-list" style="margin-top:18px;">
+          <li>Solo, coop, adversité, social avant tout : quatre façons différentes de répondre à la même question — qu'est-ce que le joueur vient chercher dans la difficulté — pas quatre genres de jeux étanches.</li>
+          <li>Exploiter le jeu change de nature selon qu'on triche une IA (neutre) ou qu'on exploite un humain ou le système contre lui (zone grise, question d'éthique compétitive).</li>
+          <li>Skill, progression et pay-to-win sont trois leviers d'écart distincts — le matchmaking n'en corrige qu'un seul, les deux autres restent la responsabilité d'autres systèmes (économie, conception des modes).</li>
+          <li>L'asymétrie de rôle tient mieux dans la durée avec des objectifs différents et des capacités proches qu'avec un pouvoir radicalement différent (Dead by Daylight vs Evolve) — et le patch de balance n'est pas qu'un outil d'équité, c'est aussi un outil de vie du jeu.</li>
+          <li>Le fair-play n'est pas un problème de « mauvais joueurs » mais de populations différentes qui se rencontrent — et le design mécanique (pings, surrender, endorsement) peut réduire la friction sociale sans jamais remplacer entièrement la modération humaine.</li>
+          <li>Tous les jeux solo ne sont pas faits pour être transposés en multijoueur — Outer Wilds le montre par l'absurde, Journey montre l'inverse : un jeu peut être secrètement multijoueur sans jamais le dire.</li>
+        </ul>
+      </section>
+
+      <footer>EARTSUP · Game Design multijoueur — support de cours autonome</footer>
+
+    </main>
+  </div>
+</div>
